@@ -1,0 +1,177 @@
+.greenhouse {
+    position: relative;
+    background: rgb(255, 255, 255);
+    width: 338px;
+    height: 247px;
+    border: 1px solid #E7E7E7;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+}
+
+.greenhouse-img {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    width: 338px;
+    height: 180px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px 10px 0px 0px;
+    overflow: hidden;
+}
+
+.no-image {
+    display: block;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.check-greenhouse-button {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 338px;
+    height: 180px;
+    border-radius: 10px 10px 0px 0px;
+    background-color: rgb(136, 136, 136, 0);
+    cursor: pointer;
+    border: 0px;
+    color: rgba(255, 255, 255, 0);
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.check-greenhouse-button:hover {
+    background-color: rgb(217, 217, 217, 0.5);
+    color: rgb(255, 255, 255, 1);
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+}
+
+.greenhouse-name {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+    margin-left: 14px;
+    background-color: #00AF3B;
+    width: 132px;
+    height: 25px;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.greenhouse-name-text {
+    margin-left: 9px;
+    margin-right: 9px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.greenhouse-location {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 147px;
+    margin-left: 14px;
+    background-color: #00AF3B;
+    width: 132px;
+    height: 25px;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.greenhouse-location-text {
+    margin-left: 9px;
+    margin-right: 9px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.greenhouse-parameters {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 67px;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.temp-icon {
+    width: 13px;
+}
+
+.greenhouse-temp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 41px;
+}
+
+.temp-number {
+    text-align: center;
+    max-width: 28px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.temp-symbol {
+    margin-left: 1px;
+}
+
+.temp-number-symbol-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.humidity-icon {
+    width: 19px;
+}
+
+.icon-container {
+    height: 29px;
+}
+
+.light-icon {
+    width: 28px;
+}
+
+.wind-icon {
+    width: 34px;
+}
+
+.delete-button {
+    position: absolute;
+    display: flex;
+    top: 8px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0px;
+    background-color:#00AF3B;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.1s;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #E80000;
+}
+
+.delete-icon {
+    width: 15px;
+}
