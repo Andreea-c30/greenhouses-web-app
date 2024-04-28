@@ -7,14 +7,18 @@ import WindIcon from '../imgs/wind-icon.png'
 import DeleteIcon from '../imgs/delete-icon.png'
 
 
-function Greenhouse() {
+function Greenhouse(props) {
+    const handleDelete = () => {
+        props.onDelete(props.key);
+    };
+
     return (
         <div className='greenhouse'>
             <div className='greenhouse-name'>
-                <span className='greenhouse-name-text'>Greenhouse 1 fdadf fada dfadf</span>
+                <span className='greenhouse-name-text'>{props.name}</span>
             </div>
             <div className='greenhouse-location'>
-                <span className='greenhouse-location-text'>Greenhouse 1 fdadf fada dfadf</span>
+                <span className='greenhouse-location-text'>{props.location}</span>
             </div>
 
             <div className='greenhouse-img'>
@@ -24,7 +28,7 @@ function Greenhouse() {
             <button className='check-greenhouse-button'>
                 Check greenhouse
             </button>
-            <button className='delete-button'>
+            <button className='delete-button' onClick={handleDelete}>
                 <img src={DeleteIcon} className='delete-icon'/>
             </button>
 

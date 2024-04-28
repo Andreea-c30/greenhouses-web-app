@@ -4,9 +4,12 @@ html {
 
 #greenhouse-list {
   display: flex;
-  background-color: rgb(185, 185, 185);
+  flex-wrap: wrap;
+  row-gap: 20px;
+  column-gap: 30px;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
   margin-top: 120px;
   margin-left: 10%;
   margin-right: 10%;
-  height: 500px;
 }
