@@ -2,13 +2,18 @@ html {
   font-family: "Source Sans 3", sans-serif;
 }
 
+.dark-mode {
+  background-color: #0e933a;
+}
+
+
 #greenhouse-list {
   display: flex;
   flex-wrap: wrap;
   row-gap: 20px;
   column-gap: 30px;
   justify-content: flex-start;
-  background-color: rgb(255, 255, 255);
+  background-color: none;
   margin-left: 10%;
   margin-right: 10%;
 }
@@ -17,7 +22,8 @@ html {
   display: flex;
   flex-wrap: wrap;
   column-gap: 20px;
-  background-color: rgb(255, 255, 255);
+  row-gap: 20px;
+  background-color: none;
   margin-left: 10%;
   margin-right: 10%;
   margin-bottom: 20px;
