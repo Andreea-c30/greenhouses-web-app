@@ -52,7 +52,7 @@
     align-items: center;
     margin-top: 8px;
     margin-left: 14px;
-    background-color: #00AF3B;
+    background-color: var(--primary-color);
     width: 132px;
     height: 25px;
     border-radius: 20px;
@@ -77,7 +77,7 @@
     align-items: center;
     margin-top: 147px;
     margin-left: 14px;
-    background-color: #00AF3B;
+    background-color: var(--primary-color);
     width: 132px;
     height: 25px;
     border-radius: 20px;
@@ -160,7 +160,7 @@
     height: 30px;
     border-radius: 50%;
     border: 0px;
-    background-color:#00AF3B;
+    background-color: var(--primary-color);
     justify-content: center;
     align-items: center;
     transition: background-color 0.1s;

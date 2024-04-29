@@ -64,7 +64,7 @@
     gap: 2px;
     width: 155px;
     height: 46px;
-    background-color: #00AF3B;
+    background-color: var(--primary-color);
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
     border: 0px;
     border-radius: 10px;
@@ -75,7 +75,7 @@
 }
 
 .img-upload:hover {
-    background-color: #00bd3f;
+    background-color: var(--primary-light-color);
 }
 
 .img-upload img {
@@ -97,7 +97,7 @@ input[type="file"] {
     align-items: center;
     width: 155px;
     height: 46px;
-    background-color: #00AF3B;
+    background-color: var(--primary-color);
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
     border: 0px;
     border-radius: 10px;
@@ -110,7 +110,7 @@ input[type="file"] {
 }
 
 .save-data:hover {
-    background-color: #00bd3f;
+    background-color: var(--primary-light-color);
 }
 
 .file-name {

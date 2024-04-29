@@ -1,0 +1,29 @@
+.theme-mode-button {
+    border-radius: 50%;
+    width: 61px;
+    height: 61px;
+    border: 0px;
+    background-color: var(--primary-color);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.theme-mode-button:hover {
+    background-color: var(--primary-light-color);
+}
+
+.light-mode-icon {
+    width: 34px;
+}
+
+.dark-mode-icon {
+    width: 17px;
+}

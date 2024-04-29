@@ -3,7 +3,7 @@ import './Logo.css'
 
 
 function Logo() {
-    return <img src={logo} id="logo" alt='Logo' />
+    return <img src={logo} className="logo" alt='Logo' />
 }
 
 export default Logo;
