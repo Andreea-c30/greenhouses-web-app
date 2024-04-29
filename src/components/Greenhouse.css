@@ -11,7 +11,7 @@
 .greenhouse-img {
     display: flex;
     align-items: center;
-    justify-self: center;
+    justify-content: center;
     width: 338px;
     height: 180px;
     background-color: rgb(255, 255, 255);
@@ -19,9 +19,8 @@
     overflow: hidden;
 }
 
-.no-image {
-    display: block;
-    border-radius: 10px 10px 0px 0px;
+.greenhouse-img img {
+    width: 100%;
 }
 
 .check-greenhouse-button {

@@ -9,7 +9,7 @@ import DeleteIcon from '../imgs/delete-icon.png'
 
 function Greenhouse(props) {
     const handleDelete = () => {
-        props.onDelete(props.key);
+        props.onDelete(props.index);
     };
 
     return (
@@ -22,7 +22,7 @@ function Greenhouse(props) {
             </div>
 
             <div className='greenhouse-img'>
-                <img src={NoImage} className='no-image'/>
+                {!props.img ? (<img src={NoImage}/>):(<img src={props.img} />)}
             </div>
 
             <button className='check-greenhouse-button'>

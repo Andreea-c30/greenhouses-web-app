@@ -1,0 +1,25 @@
+.add-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background-color: #00AF3B;
+    width: 208px;
+    height: 42px;
+    border: 0px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s;
+}
+
+.add-button:hover {
+    background-color: #00bd3f;
+}
+
+.add-greenhouse-icon {
+    width: 28px;
+}
