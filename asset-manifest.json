@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/greenhouses-web-app/static/css/main.e6c13ad2.css",
-    "main.js": "/greenhouses-web-app/static/js/main.ca4fd3dd.js",
+    "main.css": "/greenhouses-web-app/static/css/main.d3835d1c.css",
+    "main.js": "/greenhouses-web-app/static/js/main.7461835e.js",
     "static/js/453.ed3810f9.chunk.js": "/greenhouses-web-app/static/js/453.ed3810f9.chunk.js",
+    "static/media/botanix_logo.png": "/greenhouses-web-app/static/media/botanix_logo.9a9502b0757ffd0a9931.png",
+    "static/media/dark-theme-logo.png": "/greenhouses-web-app/static/media/dark-theme-logo.4e5eaeb086db151dd3fb.png",
     "index.html": "/greenhouses-web-app/index.html",
-    "main.e6c13ad2.css.map": "/greenhouses-web-app/static/css/main.e6c13ad2.css.map",
-    "main.ca4fd3dd.js.map": "/greenhouses-web-app/static/js/main.ca4fd3dd.js.map",
+    "main.d3835d1c.css.map": "/greenhouses-web-app/static/css/main.d3835d1c.css.map",
+    "main.7461835e.js.map": "/greenhouses-web-app/static/js/main.7461835e.js.map",
     "453.ed3810f9.chunk.js.map": "/greenhouses-web-app/static/js/453.ed3810f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.ca4fd3dd.js"
+    "static/css/main.d3835d1c.css",
+    "static/js/main.7461835e.js"
   ]
 }
