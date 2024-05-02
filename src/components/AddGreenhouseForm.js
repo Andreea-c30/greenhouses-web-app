@@ -5,11 +5,18 @@ import UploadIcon from '../imgs/upload-icon.png'
 
 
 function AddGreenhouseForm(props) {
-  const [name, setName] = useState('');
-  const [location, setLocation] = useState('');
-  const [image, setImage] = useState(null);
-  const [imagePath, setImagePath] = useState(null);
+  const [name, setName] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.name : "");
+  const [location, setLocation] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.location : "");
+  const [image, setImage] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.img: null);
+  const [submitError, setSubmitError] = useState(false);
+  const [imagePath, setImagePath] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.imgPath : "");
 
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -32,10 +39,22 @@ function AddGreenhouseForm(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (!(name && location)){
+      setSubmitError(true);
+      return;
+    } 
+
     props.addGreenhouse({
-      name: name,
-      location: location,
-      img: image ? image: null
+      "name": name,
+      "location": location,
+      "imgPath": imagePath,
+      "img": image ? image: null,
+      "date": new Date(),
+      "temperature": getRandomInt(1, 100),
+      "humidity": getRandomInt(1, 100),
+      "light": getRandomInt(1, 100),
+      "wind": getRandomInt(1, 100)
     });
 
     // Reset form fields
@@ -43,9 +62,10 @@ function AddGreenhouseForm(props) {
     setLocation('');
     setImage(null);
     setImagePath(null);
+    setSubmitError(false);
     props.closeForm();
+    props.setTriggerSorting(!props.triggerSorting);
   };
-  console.log(image)
 
   return (
     <div className='all-gray'>
@@ -53,16 +73,16 @@ function AddGreenhouseForm(props) {
         <button className='close-form-button' onClick={props.closeForm}>
           <img src={CloseFormIcon} className='close-form-icon'/>
         </button>
-        {/* <span className='form-labels'>Name:</span> */}
         <form>
-          <label>
+          <label className='text-label'>
             Name:
             <input className='text-input' type="text" value={name} onChange={handleNameChange} />
+            {!name && submitError && <label className='invalid-label'>Invalid name</label>}
           </label>
-
-          <label>
+          <label className='text-label'>
             Location:
             <input className='text-input' type="text" value={location} onChange={handleLocationChange} />
+            {!location && submitError && <label className='invalid-label'>Invalid location</label>}
           </label>
 
           <label className="img-upload">

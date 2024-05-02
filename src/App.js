@@ -12,10 +12,13 @@ import './App.css'
 function App() {
   const [addGreenhouseButtonState, setAddGreenhouseButtonState] = useState(false);
   const [currentGreenhouses, setCurrentGreenhouses] = useState([]);
-  const [sortingOption, setSortingOption] = useState('');
+  const [sortingOption, setSortingOption] = useState('name');
   const [primaryColor, setPrimaryColor] = useState('#00AF3B');
   const [primaryLightColor, setPrimaryLightColor] = useState('#00D247');
   const [toggleLight, setToggleLight] = useState(true);
+  const [triggerSorting, setTriggerSorting] = useState(false);
+  const [greenhouseToEdit, setGreenhouseToEdit] = useState(null);
+
 
   useEffect(() => {
     const storedGreenhouses = localStorage.getItem('greenhouses');
@@ -33,15 +36,29 @@ function App() {
   }, [currentGreenhouses]);
 
   useEffect(() => {
+    if (currentGreenhouses.length !== 0) {
+      sortGreenhouses();
+    }
+  }, []);
+
+  useEffect(() => {
     if (currentGreenhouses.length != 0)  {
       sortGreenhouses();
     }
-  }, [sortingOption]);
+  }, [sortingOption, triggerSorting]);
 
   const deleteGreenhouse = (index) => {
     const updatedGreenhouses = [...currentGreenhouses];
     updatedGreenhouses.splice(index, 1);
     setCurrentGreenhouses(updatedGreenhouses);
+  };
+
+  const editGreenhouse = (index) => {
+    setAddGreenhouseButtonState(true);
+    setGreenhouseToEdit(currentGreenhouses[index]);
+    let tempArray = currentGreenhouses;
+    tempArray.splice(index, 1);
+    setCurrentGreenhouses(tempArray);
   };
 
   const addGreenhouse = (data) => {
@@ -56,14 +73,19 @@ function App() {
 
   const closeForm = () => {
     setAddGreenhouseButtonState(false);
+    setGreenhouseToEdit(false);
   };
 
   const sortGreenhouses = () => {
     let sortedArray = [...currentGreenhouses];
-    if (sortingOption === 'alphabetical') {
+    if (sortingOption === 'name') {
       sortedArray.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortingOption === 'location') {
       sortedArray.sort((a, b) => a.location.localeCompare(b.location));
+    } else if (sortingOption === 'date') {
+      sortedArray.sort(function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+      });
     }
     setCurrentGreenhouses(sortedArray);
   };
@@ -91,24 +113,40 @@ function App() {
       <div id='add-sort-buttons'>
         <AddGreenhouseButton handleAddGreenhouseButton={handleAddGreenhouseButton}/>
         <SortGreenhouses handleSort={handleSort}/>
-        {addGreenhouseButtonState && <AddGreenhouseForm closeForm={closeForm} addGreenhouse={addGreenhouse}/>} 
+        {addGreenhouseButtonState && 
+          <AddGreenhouseForm 
+            closeForm={closeForm} 
+            addGreenhouse={addGreenhouse}
+            setTriggerSorting={setTriggerSorting}
+            triggerSorting={triggerSorting}
+          />
+        } 
       </div>
-      <div id='greenhouse-list'>
+      <div className={`greenhouse-list ${currentGreenhouses.length == 0 && 'centered-greenhouse-list'}`}>
+        {currentGreenhouses.length == 0 && <span className='no-greenhouses-label'>No greenhouses</span>}
         {
           currentGreenhouses.map((greenhouse, index) => {
               return ( 
                 <Greenhouse 
                   key={index}
                   index={index}
-                  name={greenhouse.name}
-                  location={greenhouse.location}
-                  img={greenhouse.img}
                   onDelete={deleteGreenhouse}
+                  onEdit={editGreenhouse}
+                  greenhouse={greenhouse}
                 />
               );
             }
           )
         }
+        {greenhouseToEdit && 
+          <AddGreenhouseForm 
+            closeForm={closeForm} 
+            addGreenhouse={addGreenhouse}
+            setTriggerSorting={setTriggerSorting}
+            triggerSorting={triggerSorting}
+            greenhouseToEdit={greenhouseToEdit}
+          />
+        } 
       </div>
     </div>
   );

@@ -14,10 +14,9 @@ function SortGreenhouses({ handleSort }) {
     return (
         <>
             <select id="sortDropdown" value={selectedOption} onChange={handleOptionChange}>
-                <span>Sort by: </span>
-                <option value="">Sort by</option>
-                <option value="alphabetical">Alphabetical</option>
-                <option value="location">Location</option>
+                <option value="name">Sort by: Name</option>
+                <option value="location">Sort by: Location</option>
+                <option value="date">Sort by: Date</option>
             </select>
         </>
     )
