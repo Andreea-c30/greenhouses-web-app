@@ -5,30 +5,30 @@ import HumidityIcon from '../imgs/humidity-icon.png'
 import LightIcon from '../imgs/light-icon.png'
 import WindIcon from '../imgs/wind-icon.png'
 import DeleteIcon from '../imgs/delete-icon.png'
+import EditIcon from '../imgs/edit-icon.png'
 
 
 function Greenhouse(props) {
-    const handleDelete = () => {
-        props.onDelete(props.index);
-    };
-
     return (
         <div className='greenhouse'>
             <div className='greenhouse-name'>
-                <span className='greenhouse-name-text'>{props.name}</span>
+                <span className='greenhouse-name-text'>{props.greenhouse.name}</span>
             </div>
             <div className='greenhouse-location'>
-                <span className='greenhouse-location-text'>{props.location}</span>
+                <span className='greenhouse-location-text'>{props.greenhouse.location}</span>
             </div>
 
             <div className='greenhouse-img'>
-                {!props.img ? (<img src={NoImage}/>):(<img src={props.img} />)}
+                {!props.greenhouse.img ? (<img src={NoImage}/>):(<img src={props.greenhouse.img} />)}
             </div>
 
             <button className='check-greenhouse-button'>
                 Check greenhouse
             </button>
-            <button className='delete-button' onClick={handleDelete}>
+            <button className='delete-button edit-button' onClick={() => {props.onEdit(props.index)}}>
+                <img src={EditIcon}/>
+            </button>
+            <button className='delete-button' onClick={() => {props.onDelete(props.index)}}>
                 <img src={DeleteIcon} className='delete-icon'/>
             </button>
 
@@ -38,7 +38,7 @@ function Greenhouse(props) {
                         <img src={TempIcon} className='temp-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>343</span>
+                        <span className='temp-number'>{props.greenhouse.temperature}</span>
                         <span className='temp-symbol'>°C</span>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ function Greenhouse(props) {
                         <img src={HumidityIcon} className='humidity-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>53220</span>
+                        <span className='temp-number'>{props.greenhouse.humidity}</span>
                         <span className='temp-symbol'>%</span>
                     </div>
                 </div>
@@ -58,7 +58,7 @@ function Greenhouse(props) {
                         <img src={LightIcon} className='light-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>50</span>
+                        <span className='temp-number'>{props.greenhouse.light}</span>
                         <span className='temp-symbol'>%</span>
                     </div>
                 </div>
@@ -68,7 +68,7 @@ function Greenhouse(props) {
                         <img src={WindIcon} className='wind-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>0</span>
+                        <span className='temp-number'>{props.greenhouse.wind}</span>
                         <span className='temp-symbol'>%</span>
                     </div>
                 </div>

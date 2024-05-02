@@ -174,3 +174,12 @@
 .delete-icon {
     width: 15px;
 }
+
+.delete-button.edit-button {
+    top: 8px;
+    right: 50px;
+}
+
+.delete-button.edit-button img {
+    width: 18px;
+}
