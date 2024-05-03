@@ -47,7 +47,18 @@ function AddGreenhouseForm(props) {
 
   
     if (props.greenhouseToEdit) {
-      props.updateGreenhouse(props.index, name, location, imagePath, image);
+        const updatedGreenhouse = {
+          "name": name,
+          "location": location,
+          "imgPath": imagePath,
+          "img": image ? image: null,
+          "date": new Date(),
+          "temperature": getRandomInt(1, 100),
+          "humidity": getRandomInt(1, 100),
+          "light": getRandomInt(1, 100),
+          "ventilation": getRandomInt(1, 100)
+        };
+        props.updateGreenhouse(updatedGreenhouse);      
     } else {
       props.addGreenhouse({
         "name": name,

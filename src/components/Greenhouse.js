@@ -25,10 +25,10 @@ function Greenhouse(props) {
             <button className='check-greenhouse-button'>
                 Check greenhouse
             </button>
-            <button className='delete-button edit-button' onClick={() => {props.onEdit(props.index)}}>
+            <button className='delete-button edit-button' onClick={() => {props.onEdit(props.greenhouse)}}>
                 <img src={EditIcon}/>
             </button>
-            <button className='delete-button' onClick={() => {props.onDelete(props.index)}}>
+            <button className='delete-button' onClick={() => {props.onDelete(props.greenhouse)}}>
                 <img src={DeleteIcon} className='delete-icon'/>
             </button>
 

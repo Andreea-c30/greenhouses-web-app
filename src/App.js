@@ -31,27 +31,25 @@ function App() {
     }
   }, [currentGreenhouses]);
 
-  const deleteGreenhouse = (index) => {
-    const updatedGreenhouses = [...currentGreenhouses];
-    updatedGreenhouses.splice(index, 1);
+  const deleteGreenhouse = (greenhouse) => {
+    const updatedGreenhouses = currentGreenhouses.filter(item => item !== greenhouse);
     setCurrentGreenhouses(updatedGreenhouses);
   };
-
-  const editGreenhouse = (index) => {
+  
+  const editGreenhouse = (greenhouse) => {
     setAddGreenhouseButtonState(true);
-    setGreenhouseToEdit(currentGreenhouses[index]);
-    setGreenhouseToEditIndex(index);
+    setGreenhouseToEdit(greenhouse);
   };
 
-  const updateGreenhouse = (index, name, location, imgPath, img) => {
-    let updatedGreenhouses = [...currentGreenhouses];
-    updatedGreenhouses[index].name = name 
-    updatedGreenhouses[index].location = location 
-    updatedGreenhouses[index].imgPath = imgPath 
-    updatedGreenhouses[index].img = img 
+  const updateGreenhouse = (updatedGreenhouse) => {
+    const updatedGreenhouses = currentGreenhouses.map(greenhouse => {
+      if (greenhouse === greenhouseToEdit) {
+        return updatedGreenhouse;
+      }
+      return greenhouse;
+    });
     setCurrentGreenhouses(updatedGreenhouses);
     setGreenhouseToEdit(null);
-    setGreenhouseToEditIndex(null);
   };
 
   const addGreenhouse = (data) => {
