@@ -69,7 +69,6 @@ function AddGreenhouseForm(props) {
     setImagePath(null);
     setSubmitError(false);
     props.closeForm();
-    props.setTriggerSorting(!props.triggerSorting);
   };
 
   return (
