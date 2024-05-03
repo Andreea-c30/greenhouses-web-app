@@ -27,13 +27,13 @@ function AddGreenhouseForm(props) {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
+    setImagePath(file.name);
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
-      setImagePath(event.target.files[0]);
     }
   };
 
@@ -45,17 +45,22 @@ function AddGreenhouseForm(props) {
       return;
     } 
 
-    props.addGreenhouse({
-      "name": name,
-      "location": location,
-      "imgPath": imagePath,
-      "img": image ? image: null,
-      "date": new Date(),
-      "temperature": getRandomInt(1, 100),
-      "humidity": getRandomInt(1, 100),
-      "light": getRandomInt(1, 100),
-      "wind": getRandomInt(1, 100)
-    });
+  
+    if (props.greenhouseToEdit) {
+      props.updateGreenhouse(props.index, name, location, imagePath, image);
+    } else {
+      props.addGreenhouse({
+        "name": name,
+        "location": location,
+        "imgPath": imagePath,
+        "img": image ? image: null,
+        "date": new Date(),
+        "temperature": getRandomInt(1, 100),
+        "humidity": getRandomInt(1, 100),
+        "light": getRandomInt(1, 100),
+        "ventilation": getRandomInt(1, 100)
+      });
+    }
 
     // Reset form fields
     setName('');
@@ -93,7 +98,7 @@ function AddGreenhouseForm(props) {
           {image ? (
               <div className='file-name-container'>
                 <span className='file-name'>File name: </span>
-                <span>{imagePath.name}</span>
+                <span>{imagePath}</span>
               </div>
             ):(
               <div className='file-name-container'>

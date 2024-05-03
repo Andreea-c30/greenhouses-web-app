@@ -18,6 +18,7 @@ function App() {
   const [toggleLight, setToggleLight] = useState(true);
   const [triggerSorting, setTriggerSorting] = useState(false);
   const [greenhouseToEdit, setGreenhouseToEdit] = useState(null);
+  const [greenhouseToEditIndex, setGreenhouseToEditIndex] = useState(null);
 
 
   useEffect(() => {
@@ -56,9 +57,18 @@ function App() {
   const editGreenhouse = (index) => {
     setAddGreenhouseButtonState(true);
     setGreenhouseToEdit(currentGreenhouses[index]);
-    let tempArray = currentGreenhouses;
-    tempArray.splice(index, 1);
-    setCurrentGreenhouses(tempArray);
+    setGreenhouseToEditIndex(index);
+  };
+
+  const updateGreenhouse = (index, name, location, imgPath, img) => {
+    let updatedGreenhouses = [...currentGreenhouses];
+    updatedGreenhouses[index].name = name 
+    updatedGreenhouses[index].location = location 
+    updatedGreenhouses[index].imgPath = imgPath 
+    updatedGreenhouses[index].img = img 
+    setCurrentGreenhouses(updatedGreenhouses);
+    setGreenhouseToEdit(null);
+    setGreenhouseToEditIndex(null);
   };
 
   const addGreenhouse = (data) => {
@@ -86,6 +96,14 @@ function App() {
       sortedArray.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       });
+    } else if (sortingOption === 'temperature') {
+      sortedArray.sort((a, b) => b.temperature - a.temperature);
+    } else if (sortingOption === 'humidity') {
+      sortedArray.sort((a, b) => b.humidity - a.humidity);
+    } else if (sortingOption === 'light') {
+      sortedArray.sort((a, b) => b.light - a.light);
+    } else if (sortingOption === 'ventilation') {
+      sortedArray.sort((a, b) => b.ventilation - a.ventilation);
     }
     setCurrentGreenhouses(sortedArray);
   };
@@ -145,6 +163,8 @@ function App() {
             setTriggerSorting={setTriggerSorting}
             triggerSorting={triggerSorting}
             greenhouseToEdit={greenhouseToEdit}
+            index={greenhouseToEditIndex}
+            updateGreenhouse={updateGreenhouse}
           />
         } 
       </div>

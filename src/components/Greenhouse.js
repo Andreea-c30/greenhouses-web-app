@@ -68,7 +68,7 @@ function Greenhouse(props) {
                         <img src={WindIcon} className='wind-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>{props.greenhouse.wind}</span>
+                        <span className='temp-number'>{props.greenhouse.ventilation}</span>
                         <span className='temp-symbol'>%</span>
                     </div>
                 </div>
