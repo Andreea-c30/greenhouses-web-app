@@ -3,6 +3,9 @@ import mqtt_access
 import random
 import json
 
+from db import db
+from models import Zone
+
 # MQTT Broker details 
 broker = mqtt_access.host
 port = mqtt_access.port 
@@ -33,8 +36,12 @@ def subscribe(client):
         message = msg.payload.decode() 
         if message not in received_messages: 
             print(f"Received `{message}` from `{msg.topic}` topic") 
-            received_messages.add(message) 
+            received_messages.add(message)
             message = json.loads(message)
+
+            # Add the data into the db
+            # Expect: greenhouse_id, zone_id, sensor_id, data
+
 
     client.subscribe(topic) 
     client.on_message = on_message 
