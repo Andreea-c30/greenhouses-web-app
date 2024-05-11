@@ -1,6 +1,7 @@
 from db import db
 from sqlalchemy.sql import func
 
+
 class Greenhouse(db.Model):
     __tablename__ = 'greenhouses'
 
@@ -9,7 +10,11 @@ class Greenhouse(db.Model):
     location = db.Column(db.String)
     image = db.Column(db.LargeBinary)
 
-    zones = db.relationship('Zone', backref='greenhouse')
+    zones = db.relationship(
+        'Zone', 
+        backref='greenhouse', 
+        cascade="all, delete"
+    )
 
 
 class Zone(db.Model):
@@ -18,8 +23,13 @@ class Zone(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gh_id = db.Column(db.Integer, db.ForeignKey('greenhouses.id'), nullable=False)
     name = db.Column(db.String)
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
 
-    sensors = db.relationship('Sensor', backref='zone')
+    sensor_data = db.relationship(
+        'SensorData', 
+        backref='zone', 
+        cascade="all, delete"
+    )
 
 
 class Parameter(db.Model):
@@ -29,27 +39,33 @@ class Parameter(db.Model):
     name = db.Column(db.String, nullable=False)
     unit = db.Column(db.String, nullable=False)
 
-    sensor_type = db.relationship('SensorType', backref='parameter') 
-    sensors_data = db.relationship('Sensor', backref='parameter') 
-
-
-class SensorType(db.Model):
-    __tablename__ = "sensor_types"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
-    
-    sensors = db.relationship('Sensor', backref='sensor_type') 
+    sensors = db.relationship('Sensor', backref='parameter') 
 
 
 class Sensor(db.Model):
     __tablename__ = "sensors"
 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+    
+    sensor_data = db.relationship('SensorData', backref='sensor') 
+
+
+class SensorData(db.Model):
+    __tablename__ = "sensor_data"
+
+    id = db.Column(db.Integer, primary_key=True)
     zone_id = db.Column(db.Integer, db.ForeignKey('zones.id'))
-    type_id = db.Column(db.Integer, db.ForeignKey('sensor_types.id'))
+    sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.id'))
     data = db.Column(db.Float)
     date = db.Column(db.DateTime, default=func.now())
 
-    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+
+class Plant(db.Model):
+    __tablename__ = "plants"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
+    zone = db.relationship('Zone', uselist=False, backref='plant')
