@@ -15,6 +15,17 @@ from db import db
 
 greenhouses = Blueprint('greenhouses', __name__)
 
+@greenhouses.route('token', methods=['GET'])
+def get_token():
+    if request.method == 'GET':
+        access_token = create_access_token(
+            identity="admin", 
+            expires_delta=timedelta(minutes=100),
+            additional_claims={'role': request.args.get("role", type=str)},
+        )
+        return jsonify({"jwt": access_token}), 200
+
+
 @greenhouses.route('create-greenhouse', methods=['POST'])
 @jwt_required()
 def create_greenhouse():
@@ -46,10 +57,8 @@ def create_greenhouse():
             db.session.add(zone)
             db.session.commit()
 
-            # Send the data back?
-            greenhouse_dict = {}
-            greenhouse_dict["id"] = greenhouse.id
-            return jsonify(greenhouse_dict), 200
+            return jsonify({"id": greenhouse.id, 
+                            "message": "Greenhouse created successfully"}), 200
         return jsonify({"message": "No permissions!"}), 403
 
 
@@ -97,7 +106,7 @@ def get_greenhouses():
                         "greenhouses": greenhouses_list, 
                         "total_items": greenhouses.total
                     }), 200  
-            return jsonify({"message": "No greenhouses!"}), 400
+            return jsonify({"message": "No greenhouses!"}), 404
         return jsonify({"message": "No permissions!"}), 403
     
 
@@ -109,7 +118,7 @@ def update_greenhouse(greenhouse_id):
             # Find it in the db
             greenhouse = Greenhouse.query.filter_by(id=greenhouse_id).first()
             if not greenhouse:
-                return jsonify({"messagge": "The greenhouse doesn't exist!"}), 400
+                return jsonify({"messagge": "The greenhouse doesn't exist!"}), 404
 
             # Change the modified values.
             name = request.form.get("name")
@@ -134,19 +143,8 @@ def delete_greenhouse(greenhouse_id):
         if get_jwt()['role'] == 'admin':
             row_to_delete = Greenhouse.query.get(greenhouse_id)
             if not row_to_delete:
-                return jsonify({"message": "The greenhouse was already deleted!"}), 400
+                return jsonify({"message": "The greenhouse was already deleted!"}), 404
             db.session.delete(row_to_delete)
             db.session.commit()
             return jsonify({"message": "Greenhouse deleted successfully!"}), 200
         return jsonify({"message": "No permissions!"}), 403
-
-
-@greenhouses.route('token', methods=['GET'])
-def get_token():
-    if request.method == 'GET':
-        access_token = create_access_token(
-            identity="admin", 
-            expires_delta=timedelta(minutes=1),
-            additional_claims={'role': request.args.get("role", type=str)},
-        )
-        return jsonify({"jwt": access_token}), 200

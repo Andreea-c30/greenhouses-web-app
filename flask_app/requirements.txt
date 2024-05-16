@@ -1,1 +1,2 @@
-pip install flask-jwt-extended
+flask-jwt-extended
+flask-swagger-ui

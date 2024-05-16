@@ -5,6 +5,7 @@ import threading
 import random
 import time
 from flask_jwt_extended import JWTManager
+from flask_swagger_ui import get_swaggerui_blueprint 
 
 import mqtt_connector
 from db import db
@@ -18,6 +19,19 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///greenhouse.db'
     db.init_app(app)
+
+    # Add swagger API docs
+    SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+    API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
+    # Call factory function to create our blueprint
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+        API_URL,
+        config={  # Swagger UI config overrides
+            'app_name': "Test application"
+        },
+    )
+    app.register_blueprint(swaggerui_blueprint)
 
     # Manage the routes
     from greenhouses import greenhouses

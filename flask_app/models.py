@@ -9,7 +9,7 @@ class Greenhouse(db.Model):
     name = db.Column(db.String)
     location = db.Column(db.String)
     img = db.Column(db.LargeBinary)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, default=func.now())
     imgPath = db.Column(db.String)
 
     zones = db.relationship(

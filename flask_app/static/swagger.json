@@ -1,0 +1,277 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Greenhouse API",
+    "description": "API for managing greenhouses",
+    "version": "1.0"
+  },
+  "basePath": "/",
+
+
+
+  "paths": {
+    "/token": {
+      "get": {
+        "summary": "Get access token",
+        "responses": {
+          "200": {
+            "description": "Returns JWT token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "jwt": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Role for the token",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      }
+    },
+
+
+
+    "/create-greenhouse": {
+      "post": {
+        "summary": "Create a new greenhouse",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Greenhouse created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No permissions!"
+          }
+        },
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of the greenhouse",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "formData",
+            "description": "Location of the greenhouse",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "img",
+            "in": "formData",
+            "description": "Image of the greenhouse",
+            "required": false,
+            "type": "file"
+          }
+        ]
+      }
+    },
+
+
+
+    "/get-greenhouses": {
+      "get": {
+        "summary": "Get basic data about greenhouses",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns basic data about greenhouses",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "greenhouses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "greenhouse_id": {
+                        "type": "integer"
+                      },
+                      "img": {
+                        "type": "string",
+                        "format": "byte"
+                      },
+                      "imgPath": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "location": {
+                        "type": "string"
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "temperature": {
+                        "type": "integer"
+                      },
+                      "humidity": {
+                        "type": "integer"
+                      },
+                      "light": {
+                        "type": "integer"
+                      },
+                      "ventilation": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total_items": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No greenhouses!"
+          },
+          "403": {
+            "description": "No permissions!"
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "type": "integer"
+          }
+        ]
+      }
+    },
+
+
+
+    "/update-greenhouse/{greenhouse_id}": {
+      "put": {
+        "summary": "Update a greenhouse",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated successfully!"
+          },
+          "404": {
+            "description": "The greenhouse doesn't exist!"
+          },
+          "403": {
+            "description": "No permissions!"
+          }
+        },
+        "parameters": [
+          {
+            "name": "greenhouse_id",
+            "in": "path",
+            "description": "ID of the greenhouse to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "New name for the greenhouse",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "formData",
+            "description": "New location for the greenhouse",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "img",
+            "in": "formData",
+            "description": "New image for the greenhouse",
+            "required": false,
+            "type": "file"
+          }
+        ]
+      }
+    }, 
+    
+    
+
+    "/delete-greenhouse/{greenhouse_id}": {
+      "delete": {
+        "summary": "Delete a greenhouse",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Greenhouse deleted successfully!"
+          },
+          "404": {
+            "description": "The greenhouse was already deleted!"
+          },
+          "403": {
+            "description": "No permissions!"
+          }
+        },
+        "parameters": [
+          {
+            "name": "greenhouse_id",
+            "in": "path",
+            "description": "ID of the greenhouse to delete",
+            "required": true,
+            "type": "integer"
+          }
+        ]
+      }
+    }    
+  },
+  
+
+
+  "securityDefinitions": {
+    "jwt": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
