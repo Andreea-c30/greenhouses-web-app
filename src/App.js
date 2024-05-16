@@ -4,36 +4,123 @@ import AddGreenhouseButton from './components/AddGreenhouseButton'
 import AddGreenhouseForm from './components/AddGreenhouseForm';
 import SortGreenhouses from './components/SortGreenhouses';
 import ThemeMode from './components/ThemeMode';
+import Pagination from './components/Pagination';
 import './App.css'
 
 
 function App() {
   const [addGreenhouseButtonState, setAddGreenhouseButtonState] = useState(false);
-  const [currentGreenhouses, setCurrentGreenhouses] = useState([]);
+  const [currentGreenhouses, setCurrentGreenhouses] = useState(getGreenhousesFromLS());
   const [sortingOption, setSortingOption] = useState('name');
   const [greenhouseToEdit, setGreenhouseToEdit] = useState(null);
   const [greenhouseToEditIndex, setGreenhouseToEditIndex] = useState(null);
   const [primaryColor, setPrimaryColor] = useState('#00AF3B');
   const [primaryLightColor, setPrimaryLightColor] = useState('#00D247');
+  const [totalItems, setTotalItems] = useState(getTotalItemsFromLS());
+
+
+  function getGreenhousesFromLS(){
+    let greenhousesStr = localStorage.getItem("greenhouses");
+    if (!greenhousesStr || greenhousesStr === "undefined" ){
+      return [];
+    } else {
+      return JSON.parse(greenhousesStr);;
+    }
+  }
+  
+  function getTotalItemsFromLS(){
+    let totalItems = localStorage.getItem("total_items");
+    if (!totalItems || totalItems === "undefined"){
+      return 0;
+    } else {
+      return JSON.parse(totalItems);
+    }
+  }
+
+  // Gets the JWT token for other endpoints
+  const role = "admin";
+  useEffect(() => {
+    fetch(`/token?role=${role}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem('jwt', data["jwt"]);
+      });
+  }, [])
+
+  // Gets the greenhouse items from a specific page
+  function getGreenhouses(page) {
+    fetch(`/get-greenhouses?page=${page}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Failed to fetch greenhouse data');
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      setCurrentGreenhouses(data["greenhouses"]);
+      setTotalItems(data["total_items"]);
+      localStorage.setItem('total_items', JSON.stringify(data["total_items"]));
+      localStorage.setItem('greenhouses', JSON.stringify(data["greenhouses"]));
+    })
+    .catch(error => {
+      console.error(error.message);
+    });
+  }
 
   useEffect(() => {
-    const storedGreenhouses = localStorage.getItem('greenhouses');
-    if (storedGreenhouses) {
-      setCurrentGreenhouses(JSON.parse(storedGreenhouses));
+    localStorage.setItem('greenhouses', JSON.stringify(currentGreenhouses));
+  }, [currentGreenhouses]);
+
+  useEffect(() => {
+    localStorage.setItem('total_items', JSON.stringify(totalItems));
+  }, [totalItems]);
+
+  useEffect(() => {
+    if (currentGreenhouses.length == 0){
+      getGreenhouses(1);
     }
   }, []);
 
-  useEffect(() => {
-    if (currentGreenhouses.length != 0) {
-      localStorage.setItem('greenhouses', JSON.stringify(currentGreenhouses));
-    } else {
-      localStorage.setItem('greenhouses', []);
-    }
-  }, [currentGreenhouses]);
-
+  // Deletes a greenhouse by id
   const deleteGreenhouse = (greenhouse) => {
-    const updatedGreenhouses = currentGreenhouses.filter(item => item !== greenhouse);
-    setCurrentGreenhouses(updatedGreenhouses);
+    // Delete from the DB.
+    fetch(`/delete-greenhouse/${greenhouse.greenhouse_id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+      }
+    )
+    .then((res) => {
+      if (res.status == 403){
+        alert("No permissions");
+        throw new Error("No permissions");
+      } else 
+      if (res.ok) { 
+        return res.json();
+      } else {
+        throw new Error('Network response was not ok. Status: ' + res.status);
+      }
+    })
+    .then((data) => {
+      const updatedGreenhouses = currentGreenhouses.filter(item => item !== greenhouse);
+      setCurrentGreenhouses(updatedGreenhouses);
+      setTotalItems(totalItems-1);
+      console.log(data)
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   };
   
   const editGreenhouse = (greenhouse) => {
@@ -52,11 +139,16 @@ function App() {
     setGreenhouseToEdit(null);
   };
 
+
   const addGreenhouse = (data) => {
-    const updatedGreenhouses = [...currentGreenhouses];
-    updatedGreenhouses.push(data);
-    setCurrentGreenhouses(updatedGreenhouses);
+    if (currentGreenhouses.length < 6) {
+      const updatedGreenhouses = [...currentGreenhouses];
+      updatedGreenhouses.push(data);
+      setCurrentGreenhouses(updatedGreenhouses);
+    }
+    setTotalItems(totalItems+1);
   };
+
 
   const handleAddGreenhouseButton = () => {
     setAddGreenhouseButtonState(true);
@@ -132,6 +224,7 @@ function App() {
           />
         } 
       </div>
+      <Pagination getGreenhouses={getGreenhouses} totalItems={totalItems}/>
     </div>
   );
 }

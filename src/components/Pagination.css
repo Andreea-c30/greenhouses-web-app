@@ -1,0 +1,33 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px;
+}
+
+.page-button {
+    background-color: var(--primary-color);
+    border: 0;
+    width: 40px;
+    color: white;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.page-button:hover {
+    background-color: var(--primary-light-color);
+}
+
+.page-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    max-width: 400px;
+}
+
+.active-page-button {
+    background-color: var(--primary-light-color);;
+}

@@ -10,13 +10,8 @@ function AddGreenhouseForm(props) {
   const [image, setImage] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.img: null);
   const [submitError, setSubmitError] = useState(false);
   const [imagePath, setImagePath] = useState(props.greenhouseToEdit ? props.greenhouseToEdit.imgPath : "");
+  const [realImage, setRealImage] = useState(null);
 
-  function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -27,6 +22,7 @@ function AddGreenhouseForm(props) {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
+    setRealImage(file);
     setImagePath(file.name);
     if (file) {
       const reader = new FileReader();
@@ -45,34 +41,95 @@ function AddGreenhouseForm(props) {
       return;
     } 
 
-  
     if (props.greenhouseToEdit) {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("location", location);
+      formData.append("imgPath", imagePath);
+      formData.append("img", realImage);
+
+      fetch(`/update-greenhouse/${props.greenhouseToEdit.greenhouse_id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        },
+        body: formData
+      })
+      .then (res => {
+        if (res.status == 403){
+          alert("No permissions");
+          throw new Error("No permissions");
+        } else 
+        if (res.ok) { 
+          return res.json();
+        } else {
+          throw new Error('Network response was not ok. Status: ' + res.status);
+        }
+      })
+      .then (data => {      
         const updatedGreenhouse = {
           "name": name,
           "location": location,
           "imgPath": imagePath,
-          "img": image ? image: null,
+          "img":  image ? image: null,
           "date": new Date(),
-          "temperature": getRandomInt(1, 100),
-          "humidity": getRandomInt(1, 100),
-          "light": getRandomInt(1, 100),
-          "ventilation": getRandomInt(1, 100)
+          "temperature": 0,
+          "humidity": 0,
+          "light": 0,
+          "ventilation": 0,
+          "greenhouse_id": props.greenhouseToEdit.greenhouse_id
         };
-        props.updateGreenhouse(updatedGreenhouse);      
+        props.updateGreenhouse(updatedGreenhouse);
+        console.log(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
     } else {
-      props.addGreenhouse({
-        "name": name,
-        "location": location,
-        "imgPath": imagePath,
-        "img": image ? image: null,
-        "date": new Date(),
-        "temperature": getRandomInt(1, 100),
-        "humidity": getRandomInt(1, 100),
-        "light": getRandomInt(1, 100),
-        "ventilation": getRandomInt(1, 100)
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("location", location);
+      formData.append("imgPath", imagePath);
+      formData.append("img", realImage);
+      formData.append("date", new Date().toISOString());
+
+      fetch('/create-greenhouse', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        },
+        body: formData
+      })
+      .then(res => {
+        if (res.status == 403){
+          alert("No permissions");
+          throw new Error("No permissions");
+        } else 
+        if (res.ok) { 
+          return res.json();
+        } else {
+          throw new Error('Network response was not ok. Status: ' + res.status);
+        }
+      })
+      .then(data => {
+        let newGreenhouse = {
+          "name": name,
+          "location": location,
+          "imgPath": imagePath,
+          "img": image ? image : null,
+          "date": new Date(),
+          "temperature": 0,
+          "humidity": 0,
+          "light": 0,
+          "ventilation": 0,
+          "greenhouse_id": data["id"] // Access 'id' from data directly
+        };
+        props.addGreenhouse(newGreenhouse);
+      })
+      .catch(error => {
+        console.error(error);
       });
     }
-
     // Reset form fields
     setName('');
     setLocation('');
