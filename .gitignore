@@ -27,3 +27,4 @@ mqtt_access.py
 instance
 __pycache__
 migrations
+text.txt
