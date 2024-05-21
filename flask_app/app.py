@@ -36,8 +36,11 @@ def create_app():
     # Manage the routes
     from greenhouses import greenhouses
     from mqtt_routes import mqtt
+    from zones_endpoints import zones
     app.register_blueprint(greenhouses, url_prefix='/')
     app.register_blueprint(mqtt, url_prefix='/mqtt/')
+    app.register_blueprint(zones)
+
 
     # Init the JWT
     # Configuration

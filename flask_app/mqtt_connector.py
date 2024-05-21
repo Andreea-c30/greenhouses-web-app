@@ -34,29 +34,33 @@ def subscribe(client):
     def on_message(client, userdata, msg): 
         """Receives data from MQTT."""
 
+        # Get the data from the MQTT broker
         message = msg.payload.decode() 
         print(f"Received `{message}` from `{msg.topic}` topic") 
         data = json.loads(message)
 
+        # Add the data into the db
+        # Data from the MQTT is of the format: 
+        # air_hum_ctrl = {"sensor_id":333,"cur_hum":0,"set_point":60,"ctrl_mode":0,"ctrl_out": 0}
         with app.app_context():
-            # Add the data into the db
-                # Data from the MQTT is of the format: 
-                # air_hum_ctrl = {"sensor_id":333,"cur_hum":0,"set_point":60,"ctrl_mode":0,"ctrl_out": 0}
-
             sensor = Sensor.query.filter_by(name=data["sensor_id"]).first()
             if sensor:
                 if sensor.zone_id:
-                    # If the sensor already exists there, and its "zone_id" is set,
+                    # If the sensor already exists in the table, and its "zone_id" is set,
                     # you save the received sensor data in "sensors_data" table
-                    sensor_data = SensorData(
-                        gh_id=sensor.gh_id,
-                        zone_id=sensor.zone_id,
-                        sensor_id=sensor.id,
-                        data=float(list(data.values())[1]),
-                        parameter_id=sensor.parameter.id
-                    )
-                    db.session.add(sensor_data)
-                    db.session.commit()
+                    try:
+                        data_val = float(list(data.values())[1])
+                        sensor_data = SensorData(
+                            gh_id=sensor.gh_id,
+                            zone_id=sensor.zone_id,
+                            sensor_id=sensor.id,
+                            data=data_val,
+                            parameter_id=sensor.parameter.id
+                        )
+                        db.session.add(sensor_data)
+                        db.session.commit()
+                    except:
+                        pass
             else:
                 # Save the name/id of the sensor in the "sensors" table, 
                 # if it doesn't exist there
@@ -84,8 +88,20 @@ def subscribe(client):
 
     client.subscribe("microlab/agro/green_house/+")
     client.on_message = on_message
+
+
+client = connect_mqtt() 
+def publish_mqtt(topic, message):
+    """Publish to the MQTT function."""
+
+    result = client.publish(topic, message)
+    status = result[0]
+    if status == 0:
+        print(f"Sent `{message}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
  
+
 def run_mqtt_subscriber(): 
-    client = connect_mqtt() 
     client.loop_start() 
     subscribe(client) 

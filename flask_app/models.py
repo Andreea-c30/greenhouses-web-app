@@ -38,6 +38,7 @@ class Zone(db.Model):
     gh_id = db.Column(db.Integer, db.ForeignKey('greenhouses.id'))
     name = db.Column(db.String)
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
+    plantation_date = db.Column(db.DateTime)
 
     sensors_data = db.relationship(
         'SensorData', 
@@ -102,7 +103,9 @@ class Plant(db.Model):
 class Condition(db.Model):
     __tablename__ = "conditions"
 
-    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), primary_key=True)
-    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'), primary_key=True)
-    name = db.Column(db.String)
-    duration = db.Column(db.Time)
+    id = db.Column(db.Integer, primary_key=True)
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+    value = db.Column(db.Float)
+    next = db.Column(db.Integer)
+    duration = db.Column(db.Integer)
