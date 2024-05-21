@@ -178,6 +178,75 @@
     },
 
 
+    "/get-greenhouse/{greenhouse_id}": {
+      "get": {
+        "summary": "Get basic data about a greenhouse",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns basic data about a greenhouse",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "greenhouse_id": {
+                  "type": "integer"
+                },
+                "img": {
+                  "type": "string",
+                  "format": "byte"
+                },
+                "imgPath": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "temperature": {
+                  "type": "integer"
+                },
+                "humidity": {
+                  "type": "integer"
+                },
+                "light": {
+                  "type": "integer"
+                },
+                "ventilation": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No greenhouse!"
+          },
+          "403": {
+            "description": "No permissions!"
+          }
+        },
+        "parameters": [
+          {
+            "name": "greenhouse_id",
+            "in": "path",
+            "description": "Greenhouse ID",
+            "required": true,
+            "type": "integer"
+          }
+        ]
+      }
+    },
+
+
 
     "/update-greenhouse/{greenhouse_id}": {
       "put": {
@@ -264,7 +333,6 @@
       }
     }    
   },
-  
 
 
   "securityDefinitions": {
