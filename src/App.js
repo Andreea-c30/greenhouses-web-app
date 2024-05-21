@@ -18,7 +18,7 @@ function App() {
   const [primaryLightColor, setPrimaryLightColor] = useState('#00D247');
   const [totalItems, setTotalItems] = useState(getTotalItemsFromLS());
 
-
+  
   function getGreenhousesFromLS(){
     let greenhousesStr = localStorage.getItem("greenhouses");
     if (!greenhousesStr || greenhousesStr === "undefined" ){
@@ -38,9 +38,11 @@ function App() {
   }
 
   // Gets the JWT token for other endpoints
-  const role = "admin";
   useEffect(() => {
-    fetch(`/token?role=${role}`)
+    const role = window.prompt('Please enter your role:', '');
+
+    if (role !== null) {
+      fetch(`/token?role=${role}`)
       .then((res) => {
         return res.json();
       })
@@ -48,6 +50,7 @@ function App() {
         console.log(data);
         localStorage.setItem('jwt', data["jwt"]);
       });
+    }
   }, [])
 
   // Gets the greenhouse items from a specific page

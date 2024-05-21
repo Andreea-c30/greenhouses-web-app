@@ -20,7 +20,7 @@ def get_token():
     if request.method == 'GET':
         access_token = create_access_token(
             identity="admin", 
-            expires_delta=timedelta(minutes=100),
+            expires_delta=timedelta(minutes=10),
             additional_claims={'role': request.args.get("role", type=str)},
         )
         return jsonify({"jwt": access_token}), 200
@@ -147,4 +147,32 @@ def delete_greenhouse(greenhouse_id):
             db.session.delete(row_to_delete)
             db.session.commit()
             return jsonify({"message": "Greenhouse deleted successfully!"}), 200
+        return jsonify({"message": "No permissions!"}), 403
+    
+
+@greenhouses.route('get-greenhouse/<int:greenhouse_id>', methods=['GET'])
+@jwt_required()
+def get_greenhouse(greenhouse_id):
+    if request.method == 'GET':
+        if get_jwt()['role'] in ['admin', 'visitor']:
+            greenhouse = Greenhouse.query.filter_by(id=greenhouse_id).first()
+            if not greenhouse:
+                return jsonify({"messagge": "The greenhouse doesn't exist!"}), 404
+
+            img = None
+            if greenhouse.img:
+                    img = "data:image/jpeg;base64,"
+                    img += base64.b64encode(greenhouse.img).decode("utf-8")
+
+            return jsonify({
+                "name": greenhouse.name,
+                "location": greenhouse.location,
+                "image": img,
+                "imgPath": greenhouse.imgPath,
+                "date": greenhouse.date,
+                "temperature": random.randint(1, 100),
+                "humidity": random.randint(1, 100),
+                "light": random.randint(1, 100),
+                "ventilation": random.randint(1, 100)
+            }), 200
         return jsonify({"message": "No permissions!"}), 403
