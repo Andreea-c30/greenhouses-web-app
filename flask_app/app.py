@@ -63,30 +63,14 @@ def create_db(app):
                 db.session.add(Parameter(name="humidity", unit="%"))
                 db.session.add(Parameter(name="light", unit="%"))
                 db.session.add(Parameter(name="ventilation", unit="%"))
-                db.session.commit()
-            if db.session.query(Sensor).count() == 0:
-                db.session.add(Sensor(name="NTC", parameter_id=1))
-                db.session.add(Sensor(name="RTDs", parameter_id=1))
-                db.session.add(Sensor(name="DHT11", parameter_id=2))
-                db.session.add(Sensor(name="SHT31", parameter_id=2))
-                db.session.add(Sensor(name="Photodiodes", parameter_id=3))
-                db.session.add(Sensor(name="Phototransistors", parameter_id=3))
-                db.session.add(Sensor(name="HVAC", parameter_id=4))
-                db.session.commit()
-            if db.session.query(SensorData).count() == 0:
-                for i in range(20):
-                    time.sleep(2)
-                    db.session.add(SensorData(
-                        zone_id=random.randint(1, 3), 
-                        sensor_id=random.randint(1, 7), 
-                        data=random.randint(1, 100)
-                    ))
-                    db.session.commit()      
+                db.session.commit()   
             print("DB was created!")
 
+
+app = create_app()
 if __name__ == '__main__': 
     # Start MQTT Subscriber in a separate thread 
-    mqtt_thread = threading.Thread(target=mqtt_connector.run_mqtt_subscriber) 
+    mqtt_thread = threading.Thread(target=mqtt_connector.run_mqtt_subscriber)
     mqtt_thread.start() 
 
-    create_app().run(debug=True)
+    app.run(debug=True)

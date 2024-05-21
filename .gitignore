@@ -28,3 +28,5 @@ instance
 __pycache__
 migrations
 text.txt
+README.md
+directions
