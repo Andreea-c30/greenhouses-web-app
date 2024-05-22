@@ -4,7 +4,6 @@ import random
 import json
 
 from db import db
-from app import app
 from models import (
     Sensor, SensorData, Parameter
 )
@@ -42,45 +41,47 @@ def subscribe(client):
         # Add the data into the db
         # Data from the MQTT is of the format: 
         # air_hum_ctrl = {"sensor_id":333,"cur_hum":0,"set_point":60,"ctrl_mode":0,"ctrl_out": 0}
+        from app import app
         with app.app_context():
-            sensor = Sensor.query.filter_by(name=data["sensor_id"]).first()
-            if sensor:
-                if sensor.zone_id:
-                    # If the sensor already exists in the table, and its "zone_id" is set,
-                    # you save the received sensor data in "sensors_data" table
-                    try:
-                        data_val = float(list(data.values())[1])
-                        sensor_data = SensorData(
-                            gh_id=sensor.gh_id,
-                            zone_id=sensor.zone_id,
-                            sensor_id=sensor.id,
-                            data=data_val,
-                            parameter_id=sensor.parameter.id
-                        )
-                        db.session.add(sensor_data)
-                        db.session.commit()
-                    except:
-                        pass
-            else:
-                # Save the name/id of the sensor in the "sensors" table, 
-                # if it doesn't exist there
-                match_params = {
-                    "cur_hum": "humidity",
-                    "cur_temp": "temperature",
-                    "cur_light": "light"
-                }
-                for key in data.keys():
-                    if key in match_params:
-                        data_param = match_params[key]
-                        parameter = Parameter.query.filter_by(name=data_param).first()
-                        sensor = Sensor(
-                            name=data["sensor_id"],
-                            parameter_id=parameter.id,
-                            mqtt_topic=msg.topic
-                        )
-                        db.session.add(sensor)
-                        db.session.commit()
-                        break
+            if 'sensor_id' in data: 
+                sensor = Sensor.query.filter_by(name=data["sensor_id"]).first()
+                if sensor:
+                    if sensor.zone_id:
+                        # If the sensor already exists in the table, and its "zone_id" is set,
+                        # you save the received sensor data in "sensors_data" table
+                        try:
+                            data_val = float(list(data.values())[1])
+                            sensor_data = SensorData(
+                                gh_id=sensor.gh_id,
+                                zone_id=sensor.zone_id,
+                                sensor_id=sensor.id,
+                                data=data_val,
+                                parameter_id=sensor.parameter.id
+                            )
+                            db.session.add(sensor_data)
+                            db.session.commit()
+                        except:
+                            pass
+                else:
+                    # Save the name/id of the sensor in the "sensors" table, 
+                    # if it doesn't exist there
+                    match_params = {
+                        "cur_hum": "humidity",
+                        "cur_temp": "temperature",
+                        "cur_light": "light"
+                    }
+                    for key in data.keys():
+                        if key in match_params:
+                            data_param = match_params[key]
+                            parameter = Parameter.query.filter_by(name=data_param).first()
+                            sensor = Sensor(
+                                name=data["sensor_id"],
+                                parameter_id=parameter.id,
+                                mqtt_topic=msg.topic
+                            )
+                            db.session.add(sensor)
+                            db.session.commit()
+                            break
 
             # When in the front the sensor is going to be set to a zone
             # we are going to add its "zone_id" in the "sensors" table

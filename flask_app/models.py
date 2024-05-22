@@ -107,5 +107,5 @@ class Condition(db.Model):
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
     parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
     value = db.Column(db.Float)
-    next = db.Column(db.Integer)
+    order = db.Column(db.Integer)
     duration = db.Column(db.Integer)
