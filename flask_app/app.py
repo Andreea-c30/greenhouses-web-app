@@ -2,8 +2,6 @@ from flask import Flask
 from flask_migrate import Migrate
 import os
 import threading 
-import random
-import time
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint 
 
@@ -34,12 +32,10 @@ def create_app():
     app.register_blueprint(swaggerui_blueprint)
 
     # Manage the routes
-    from greenhouses import greenhouses
-    from mqtt_routes import mqtt
-    from zones_endpoints import zones
+    from views.greenhouses import greenhouses
+    from views.dashboard import dashboard
     app.register_blueprint(greenhouses, url_prefix='/')
-    app.register_blueprint(mqtt, url_prefix='/mqtt/')
-    app.register_blueprint(zones)
+    app.register_blueprint(dashboard)
 
 
     # Init the JWT

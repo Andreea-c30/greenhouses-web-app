@@ -28,6 +28,8 @@ def connect_mqtt():
     client.on_connect = on_connect 
     client.connect(broker, port) 
     return client 
+client = connect_mqtt() 
+
  
 def subscribe(client): 
     def on_message(client, userdata, msg): 
@@ -91,7 +93,6 @@ def subscribe(client):
     client.on_message = on_message
 
 
-client = connect_mqtt() 
 def publish_mqtt(topic, message):
     """Publish to the MQTT function."""
 

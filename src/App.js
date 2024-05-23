@@ -37,28 +37,11 @@ function App() {
     }
   }
 
-  // Gets the JWT token for other endpoints
-  useEffect(() => {
-    const role = window.prompt('Please enter your role:', '');
-
-    if (role !== null) {
-      fetch(`/token?role=${role}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        localStorage.setItem('jwt', data["jwt"]);
-      });
-    }
-  }, [])
-
   // Gets the greenhouse items from a specific page
   function getGreenhouses(page) {
     fetch(`/get-greenhouses?page=${page}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json'
       }
     })
@@ -98,10 +81,7 @@ function App() {
   const deleteGreenhouse = (greenhouse) => {
     // Delete from the DB.
     fetch(`/delete-greenhouse/${greenhouse.greenhouse_id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
+        method: 'DELETE'
       }
     )
     .then((res) => {

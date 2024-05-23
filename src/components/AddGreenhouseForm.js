@@ -50,9 +50,6 @@ function AddGreenhouseForm(props) {
 
       fetch(`/update-greenhouse/${props.greenhouseToEdit.greenhouse_id}`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        },
         body: formData
       })
       .then (res => {
@@ -95,9 +92,6 @@ function AddGreenhouseForm(props) {
 
       fetch('/create-greenhouse', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        },
         body: formData
       })
       .then(res => {
