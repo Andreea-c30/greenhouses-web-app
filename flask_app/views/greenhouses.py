@@ -3,8 +3,12 @@ from flask import jsonify, request
 import base64
 import random
 from datetime import datetime
+from sqlalchemy.sql import func
 
-from models import Greenhouse, Zone
+from models import (
+    Greenhouse, Zone,
+    Parameter, SensorData
+)
 from db import db
 
 
@@ -110,7 +114,7 @@ def delete_greenhouse(greenhouse_id):
     if request.method == 'DELETE':
         row_to_delete = Greenhouse.query.get(greenhouse_id)
         if not row_to_delete:
-            return jsonify({"message": "The greenhouse was already deleted!"}), 404
+            return jsonify({"message": "The greenhouse was already deleted!"}), 204
         db.session.delete(row_to_delete)
         db.session.commit()
         return jsonify({"message": "Greenhouse deleted successfully!"}), 200
@@ -139,3 +143,32 @@ def get_greenhouse(greenhouse_id):
             "light": random.randint(1, 100),
             "ventilation": random.randint(1, 100)
         }), 200
+    
+
+@greenhouses.route('/get-gh-parameters-averages/<int:gh_id>', methods=['GET'])
+def get_gh_parameters_avgs(gh_id):
+    if request.method == 'GET':
+        greenhouse = Greenhouse.query.filter_by(id=gh_id).first()
+        if not greenhouse:
+            return jsonify({"message": "No greenhouse with this id!"}), 404      
+        
+        # Add the averages of every parameter that exist for this gh
+        parameters_averages = db.session.query(
+            Parameter.name, 
+            func.avg(SensorData.data).label('average_data')
+        ) \
+        .join(SensorData, Parameter.id == SensorData.parameter_id) \
+        .filter(SensorData.gh_id == gh_id) \
+        .group_by(Parameter.name) \
+        .all()
+
+        # Consider the case when the zone has no data from sensors.
+        if not parameters_averages:
+            return jsonify({"message": "No data!"}), 404
+        
+        # Add the rows to dict.
+        parameters_avgs_dict = {}
+        for parameter, value in parameters_averages:
+            parameters_avgs_dict[parameter] = value
+        
+        return jsonify(parameters_avgs_dict), 200

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.sql import func
 import json
-from datetime import datetime, timedelta
 
 from models import (
     Condition, Plant, Zone, 
@@ -14,15 +13,13 @@ from db import db
 
 dashboard = Blueprint('dashboard', __name__)
 
+
 @dashboard.route('/create-zone', methods=['POST'])
 def create_zone():
     if request.method == 'POST':
         gh_id = request.json.get("gh_id")
         name = request.json.get("name", "Zone")
 
-        if not gh_id or not isinstance(gh_id, int):
-            return jsonify({"message": "Invalid greenhouse id!"}), 400
-        
         greenhouse = Greenhouse.query.filter_by(id=gh_id).first()
         if not greenhouse:
             return jsonify({"message": "No greenhouse with this id!"}), 404
@@ -33,16 +30,12 @@ def create_zone():
         )
         db.session.add(zone)
         db.session.commit()
-
         return jsonify({"message": "Zone created successfully!"}), 200
 
 
 @dashboard.route('/get-zones/<int:gh_id>', methods=['GET'])
 def get_zone(gh_id):
     if request.method == 'GET':
-        if not gh_id or not isinstance(gh_id, int):
-            return jsonify({"message": "Invalid greenhouse id!"}), 400
-        
         greenhouse = Greenhouse.query.filter_by(id=gh_id).first()
         if not greenhouse:
             return jsonify({"message": "No greenhouse with this id!"}), 404        
@@ -70,24 +63,25 @@ def get_zone(gh_id):
                     sensor_data["name"] = sensor.name
                     sensor_data["parameter"] = sensor.parameter.name
                     zone_dict["sensors"].append(sensor_data)
-
                 zones_data.append(zone_dict)
             
             return jsonify(zones_data), 200
         return jsonify({"message": "No zones!"}), 404
-    
+
 
 @dashboard.route('/get-zone-parameters-averages', methods=['GET'])
 def get_zone_parameters_avgs():
     if request.method == 'GET':
-        gh_id = request.json.get("gh_id")
-        if not gh_id or not isinstance(gh_id, int):
-            return jsonify({"message": "Invalid greenhouse id!"}), 400
+        gh_id = request.args.get("gh_id")
+        greenhouse = Greenhouse.query.filter_by(id=gh_id).first()
+        if not greenhouse:
+            return jsonify({"message": "No greenhouse with this id!"}), 404        
         
-        zone_id = request.json.get("zone_id")
-        if not zone_id or not isinstance(zone_id, int):
-            return jsonify({"message": "Invalid zone id!"}), 400
-
+        zone_id = request.args.get("zone_id")
+        zone = Zone.query.filter_by(id=zone_id).first()
+        if not zone:
+            return jsonify({"message": "No zone with this id!"}), 404        
+        
         # Add the averages of every parameter that exist for this zone and gh
         parameters_averages = db.session.query(
             Parameter.name, 
@@ -111,34 +105,6 @@ def get_zone_parameters_avgs():
         return jsonify(parameters_avgs_dict), 200
     
 
-@dashboard.route('/get-gh-parameters-averages/<int:gh_id>', methods=['GET'])
-def get_gh_parameters_avgs(gh_id):
-    if request.method == 'GET':
-        if not gh_id or not isinstance(gh_id, int):
-            return jsonify({"message": "Invalid greenhouse id!"}), 400
-
-        # Add the averages of every parameter that exist for this gh
-        parameters_averages = db.session.query(
-            Parameter.name, 
-            func.avg(SensorData.data).label('average_data')
-        ) \
-        .join(SensorData, Parameter.id == SensorData.parameter_id) \
-        .filter(SensorData.gh_id == gh_id) \
-        .group_by(Parameter.name) \
-        .all()
-
-        # Consider the case when the zone has no data from sensors.
-        if not parameters_averages:
-            return jsonify({"message": "No data!"}), 404
-        
-        # Add the rows to dict.
-        parameters_avgs_dict = {}
-        for parameter, value in parameters_averages:
-            parameters_avgs_dict[parameter] = value
-        
-        return jsonify(parameters_avgs_dict), 200
-
-
 @dashboard.route('/get-free-sensors', methods=['GET'])
 def get_sensors():
     if request.method == 'GET':
@@ -157,24 +123,16 @@ def get_sensors():
         return jsonify({"message": "No sensors!"}), 404
 
 
-@dashboard.route('/set-sensor', methods=['POST'])
+@dashboard.route('/set-sensor', methods=['PUT'])
 def set_sensor():
-    if request.method == 'POST':
+    if request.method == 'PUT':
         # Get the sensor id, gh id and zone id to associate
         # the sensor to a specific zone
         ids = request.json
         sensor_id = ids.get("sensor_id")
-        if not sensor_id or not isinstance(sensor_id, int):
-            return jsonify({"message": "Invalid sensor id!"}), 400
-        
-        zone_id = ids.get("zone_id")
-        if not zone_id or not isinstance(zone_id, int):
-            return jsonify({"message": "Invalid zone id!"}), 400
-        
+        zone_id = ids.get("zone_id") 
         gh_id = ids.get("gh_id")
-        if not gh_id or not isinstance(gh_id, int):
-            return jsonify({"message": "Invalid gh id!"}), 400
-        
+
         sensor = Sensor.query.filter_by(id=sensor_id).first()
         if not sensor:
             return jsonify({"message": "No such sensor!"}), 404
@@ -193,9 +151,9 @@ def set_sensor():
         return jsonify({"message": "Sensor saved!"}), 200
     
 
-@dashboard.route('/unset-sensor/<int:sensor_id>', methods=['POST'])
+@dashboard.route('/unset-sensor/<int:sensor_id>', methods=['PUT'])
 def unset_sensor(sensor_id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         sensor = Sensor.query.filter_by(id=sensor_id).first()
         if not sensor:
             return jsonify({"message": "No such sensor!"}), 404
@@ -216,20 +174,64 @@ def unset_sensor(sensor_id):
 
 @dashboard.route('/update-zone', methods=['PUT'])
 def update_zone():
-    pass
+    if request.method == 'PUT':
+        zone_id = request.json.get('zone_id')
+        new_name = request.json.get('name')
+        if not new_name:
+            return jsonify({'message': 'No new name provided!'}), 400
+
+        zone = Zone.query.filter_by(id=zone_id).first()
+        if not zone:
+            return jsonify({'message': 'No such zone!'}), 404
+
+        zone.name = new_name
+        db.session.commit()
+        return jsonify({'message': 'Zone updated successfully!'}), 200
 
 
-@dashboard.route('/delete-zone', methods=['DELETE'])
-def delete_zone():
-    pass
+@dashboard.route('/delete-zone/<int:zone_id>', methods=['DELETE'])
+def delete_zone(zone_id):
+    if request.method == 'DELETE':
+        zone = Zone.query.filter_by(id=zone_id).first()
+        if not zone:
+            return jsonify({"message": "No such zone!"}), 204
+        
+        db.session.delete(zone)
+        db.session.commit()
+        return jsonify({"message": "Zone deleted!"}), 200
 
 
-@dashboard.route('/get-parameter-data', methods=['GET'])
-def get_parameter_data():
-    pass
+@dashboard.route('/get-gh-parameter-data', methods=['GET'])
+def get_gh_parameter_data():
+    if request.method == 'GET':
+        gh_id = request.args.get("gh_id")
+        greenhouse = Greenhouse.query.filter_by(id=gh_id).first()
+        if not greenhouse:
+            return jsonify({"message": "No greenhouse with this id!"}), 404      
+        
+        parameter_name = request.args.get("parameter")
+        parameter = Parameter.query.filter_by(name=parameter_name).first()
+        if not parameter:
+            return jsonify({"message": "No such parameter!"}), 404
+
+        sensors_data = SensorData.query.filter_by(
+            gh_id=gh_id,
+            parameter_id=parameter.id
+        ).order_by(SensorData.date.asc()).all()
+
+        if not sensors_data:
+            return jsonify({"message": "No data!"}), 404
+        
+        data_send = []
+        for record in sensors_data:
+            data_send.append({
+                "date": record.date.isoformat(),
+                "data": record.data
+            })
+        return jsonify(data_send), 200
 
 
-@dashboard.route('/choose-plant', methods=['GET', 'POST'])
+@dashboard.route('/choose-plant', methods=['GET', 'PUT'])
 def choose_plant():
     if request.method == 'GET':
         # Send the available plants from the DB.
@@ -245,13 +247,17 @@ def choose_plant():
             plants_data.append(plant_dict)
         return jsonify(plants_data), 200
 
-    if request.method == 'POST': 
+    if request.method == 'PUT': 
         # Get the plant's id from the front
         plant_id = request.json.get("plant_id")
-        zone_id = request.json.get("zone_id")
+        plant = Plant.query.filter_by(id=plant_id).first()
+        if not plant:
+            return jsonify({"message": "No such plant!"}), 404
 
-        # Get the zone record from the db
+        zone_id = request.json.get("zone_id")
         zone = Zone.query.filter_by(id=zone_id).first()
+        if not zone:
+            return jsonify({"message": "No such zone!"}), 404
 
         if not zone.plant_id or zone.plant_id != plant_id:
             # Add the plant to the zone
@@ -279,3 +285,5 @@ def choose_plant():
 
             return jsonify({"message": "Planted!"}), 200
         return jsonify({"message": "Already planted!"}), 204
+    
+# if plant is grown, eliminate it from the zone

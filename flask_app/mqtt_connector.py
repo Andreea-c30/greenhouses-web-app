@@ -70,7 +70,9 @@ def subscribe(client):
                     match_params = {
                         "cur_hum": "humidity",
                         "cur_temp": "temperature",
-                        "cur_light": "light"
+                        "cur_press": "air_pressure",
+                        "cur_moist": "soil_moisture",
+                        "cur_lum": "light"
                     }
                     for key in data.keys():
                         if key in match_params:
@@ -79,7 +81,7 @@ def subscribe(client):
                             sensor = Sensor(
                                 name=data["sensor_id"],
                                 parameter_id=parameter.id,
-                                mqtt_topic=msg.topic
+                                mqtt_topic=msg.topic + "/set"
                             )
                             db.session.add(sensor)
                             db.session.commit()

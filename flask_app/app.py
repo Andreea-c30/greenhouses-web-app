@@ -9,7 +9,8 @@ import mqtt_connector
 from db import db
 from models import (
     Greenhouse, Parameter,
-    Sensor, SensorData
+    Sensor, SensorData, Plant,
+    Condition
 )
 
 
@@ -36,15 +37,6 @@ def create_app():
     from views.dashboard import dashboard
     app.register_blueprint(greenhouses, url_prefix='/')
     app.register_blueprint(dashboard)
-
-
-    # Init the JWT
-    # Configuration
-    app.config['SECRET_KEY'] = 'dasEEEDADASDASD@E#@DASD'
-    app.config["JWT_SECRET_KEY"] = "DASsds2e#@e23eSDAD.ED2D2/3!@QWQ"
-    app.config['JWT_TOKEN_LOCATION'] = ['headers']
-
-    jwt = JWTManager(app)
     
     create_db(app)
     migrate = Migrate(app, db)
@@ -61,7 +53,24 @@ def create_db(app):
                 db.session.add(Parameter(name="temperature", unit="celsius"))
                 db.session.add(Parameter(name="humidity", unit="%"))
                 db.session.add(Parameter(name="light", unit="%"))
-                db.session.add(Parameter(name="ventilation", unit="%"))
+                db.session.add(Parameter(name="air_pressure", unit="pascal"))
+                db.session.add(Parameter(name="soil_moisture", unit="%"))
+                db.session.commit()   
+            if db.session.query(Plant).count() == 0:
+                db.session.add(Plant(name="Tomato"))
+                db.session.add(Plant(name="Radish"))
+                db.session.commit()   
+            if db.session.query(Condition).count() == 0:
+                db.session.add(Condition(plant_id=1, parameter_id=1, value=22, order=1, duration=60))
+                db.session.add(Condition(plant_id=1, parameter_id=2, value=50, order=1, duration=60))
+                db.session.add(Condition(plant_id=1, parameter_id=3, value=90, order=1, duration=60))
+                db.session.add(Condition(plant_id=1, parameter_id=5, value=60, order=1, duration=60))
+
+                db.session.add(Condition(plant_id=2, parameter_id=1, value=15, order=1, duration=30))
+                db.session.add(Condition(plant_id=2, parameter_id=2, value=50, order=1, duration=30))
+                db.session.add(Condition(plant_id=2, parameter_id=3, value=70, order=1, duration=30))
+                db.session.add(Condition(plant_id=2, parameter_id=5, value=55, order=1, duration=30))
+                
                 db.session.commit()   
             print("DB was created!")
 
