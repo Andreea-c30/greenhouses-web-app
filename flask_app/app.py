@@ -2,7 +2,6 @@ from flask import Flask
 from flask_migrate import Migrate
 import os
 import threading 
-from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint 
 
 import mqtt_connector
