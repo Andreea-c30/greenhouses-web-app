@@ -118,7 +118,7 @@ def delete_greenhouse(greenhouse_id):
         db.session.delete(row_to_delete)
         db.session.commit()
         return jsonify({"message": "Greenhouse deleted successfully!"}), 200
-    
+
 
 @greenhouses.route('get-greenhouse/<int:greenhouse_id>', methods=['GET'])
 def get_greenhouse(greenhouse_id):

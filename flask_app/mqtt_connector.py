@@ -48,6 +48,7 @@ def subscribe(client):
             if 'sensor_id' in data: 
                 sensor = Sensor.query.filter_by(name=data["sensor_id"]).first()
                 if sensor:
+                    print(sensor)
                     if sensor.zone_id:
                         # If the sensor already exists in the table, and its "zone_id" is set,
                         # you save the received sensor data in "sensors_data" table

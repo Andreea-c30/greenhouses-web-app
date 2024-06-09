@@ -7,8 +7,16 @@ import WindIcon from '../imgs/wind-icon.png'
 import DeleteIcon from '../imgs/delete-icon.png'
 import EditIcon from '../imgs/edit-icon.png'
 
+import { useNavigate } from 'react-router-dom'
+
 
 function Greenhouse(props) {
+    const navigate = useNavigate();
+
+    function handleNavigate(id) {
+        navigate(`/greenhouse/${id}`);
+    }
+
     return (
         <div className='greenhouse'>
             <div className='greenhouse-name'>
@@ -22,9 +30,10 @@ function Greenhouse(props) {
                 {!props.greenhouse.img ? (<img src={NoImage}/>):(<img src={props.greenhouse.img} />)}
             </div>
 
-            <button className='check-greenhouse-button'>
+            <button className='check-greenhouse-button' onClick={() => handleNavigate(props.greenhouseId)}>
                 Check greenhouse
             </button>
+
             <button className='delete-button edit-button' onClick={() => {props.onEdit(props.greenhouse)}}>
                 <img src={EditIcon}/>
             </button>
