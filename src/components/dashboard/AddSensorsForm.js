@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CloseFormIcon from '../../imgs/close-form-icon.png';
-import './AddZoneForm.css';
+import './AddSensorsForm.css';
 import Sensor from "./Sensor";
 import SensorFr from "./SensorFree";
 
@@ -80,7 +80,7 @@ function AddSensorsForm(props) {
 
     return (
     <div className="all-gray">
-        <div className="form-rectangle-create-zone">
+        <div className="form-rectangle-create-form">
             <button className='close-form-button' onClick={() => { props.setAddSensor(false) }}>
                 <img src={CloseFormIcon} className='close-form-icon' alt="Close" />
             </button>

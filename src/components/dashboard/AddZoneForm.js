@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// AddZoneForm.js
+import React, { useState } from "react";
 import CloseFormIcon from '../../imgs/close-form-icon.png';
 import './AddZoneForm.css';
 
@@ -7,12 +8,14 @@ function AddZoneForm(props) {
     const [submitError, setSubmitError] = useState(false);
     const [zones, setZones] = useState([]);
 
+
     const handleNameChange = (event) => {
         setName(event.target.value);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setName(name);
 
         if (!name) {
             setSubmitError(true);
@@ -34,17 +37,22 @@ function AddZoneForm(props) {
             if (!zoneResponse.ok) {
                 throw new Error('Network response was not ok');
             }
-            if (zoneResponse.ok) {
-                const zoneData = await zoneResponse.json();
+            
+            const zoneData = await zoneResponse.json();
             console.log('Zone created successfully: ', zoneData);
+
+            // Update the zones list in the parent component
+            props.updateZones(zoneData);
+
      
 
             }
+
         } catch (error) {
             console.error('Error:', error);
         }
 
-        setName('');
+        setName(name);
         setSubmitError(false);
         props.setAddZone(false);
     };
