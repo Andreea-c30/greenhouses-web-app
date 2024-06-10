@@ -121,6 +121,22 @@ def get_sensors():
                 })
             return jsonify(sensors_data), 200
         return jsonify({"message": "No sensors!"}), 404
+    
+
+@dashboard.route('/get-zone-sensors/<int:zone_id>', methods=['GET'])
+def get_zone_sensors(zone_id):
+    if request.method == 'GET':
+        sensors = Sensor.query.filter_by(zone_id=zone_id).all()
+        if sensors:
+            sensors_data = []
+            for sensor in sensors:
+                sensors_data.append({
+                    "sensor_id": sensor.id,
+                    "sensor_name": sensor.name,
+                    "parameter": sensor.parameter.name
+                })
+            return jsonify(sensors_data), 200
+        return jsonify({"message": "No sensors!"}), 404
 
 
 @dashboard.route('/set-sensor', methods=['PUT'])
@@ -279,6 +295,7 @@ def choose_plant():
                     if condition.parameter_id == sensor.parameter_id:
                         # Send the command
                         publish_mqtt(sensor.mqtt_topic, json.dumps(command))
+                        print(command)
 
             # Save the changes to db
             db.session.commit()
