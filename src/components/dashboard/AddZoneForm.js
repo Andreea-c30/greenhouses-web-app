@@ -36,14 +36,13 @@ function AddZoneForm(props) {
             }
             if (zoneResponse.ok) {
                 const zoneData = await zoneResponse.json();
-            console.log('Zone created successfully: ', zoneData);
-     
-
+                props.onAddZone();
+                console.log('Zone created successfully: ', zoneData);
             }
         } catch (error) {
             console.error('Error:', error);
         }
-
+    
         setName('');
         setSubmitError(false);
         props.setAddZone(false);

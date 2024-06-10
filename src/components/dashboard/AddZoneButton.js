@@ -15,6 +15,7 @@ function AddZoneButton(props) {
             </div>
             {addZone && 
                 <AddZoneForm 
+                    onAddZone={props.onAddZone}
                     setAddZone={setAddZone} 
                     greenhouseId={props.greenhouseId}
                 />

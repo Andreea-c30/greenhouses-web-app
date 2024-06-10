@@ -174,6 +174,10 @@ function Dashboard() {
     useInterval(() => {
         getAllParameterData("light", setLightData);
     }, 10000);
+
+    function onAddZone() {
+        getZones();
+    };
       
     return (
         <>
@@ -181,7 +185,7 @@ function Dashboard() {
 
             <div id="upper-container">
                 <GreenhouseName name={greenhouseBasicData.name}/>
-                <AddZoneButton greenhouseId={id}/>
+                <AddZoneButton greenhouseId={id} onAddZone={onAddZone}/>
             </div>
 
             <div id="parameters-short-container">
