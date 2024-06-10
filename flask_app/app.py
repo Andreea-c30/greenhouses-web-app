@@ -80,4 +80,4 @@ if __name__ == '__main__':
     mqtt_thread = threading.Thread(target=mqtt_connector.run_mqtt_subscriber)
     mqtt_thread.start() 
 
-    app.run(debug=True)
+    app.run(debug=False)
