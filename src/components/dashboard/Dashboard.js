@@ -1,3 +1,4 @@
+// Dashboard.js
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
@@ -10,18 +11,16 @@ import LightShort from "./LightShort";
 import SoilMoistureShort from "./SoilMoistureShort";
 import AirPressureShort from "./AirPressureShort";
 import ParameterGraph from "./ParameterGraph";
-import Zone from './Zone'; // Import the Zone component
+import Zone from './Zone';
 import './Dashboard.css';
 
 function useInterval(callback, delay) {
     const savedCallback = useRef();
    
-    // Remember the latest callback.
     useEffect(() => {
         savedCallback.current = callback;
     }, [callback]);
    
-    // Set up the interval.
     useEffect(() => {
         function tick() {
             savedCallback.current();
@@ -42,7 +41,7 @@ function Dashboard() {
     const [zones, setZones] = useState([]);
     const { id } = useParams();
 
-    useEffect(() => {
+    const fetchGreenhouseData = () => {
         fetch(`/get-greenhouse/${id}`, {
             method: 'GET'
         })
@@ -53,16 +52,18 @@ function Dashboard() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             setGreenhouseBasicData(data);
         })
         .catch(error => {
             console.log('Greenhouse not found!', error);
         });
-    }, []);
+    };
 
+    useEffect(() => {
+        fetchGreenhouseData();
+    }, [id]);
 
-    function getZones() {
+    const getZones = () => {
         fetch(`/get-zones/${id}`, {
             method: 'GET'
         })
@@ -73,18 +74,17 @@ function Dashboard() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             setZones(data);
         })
         .catch(error => {
             console.log('Error fetching zones:', error);
         });
-    }
+    };
 
     useEffect(() => {
         getZones();
-    }, []);
-    
+    },);
+
     const deleteZone = (zone) => {
         fetch(`/delete-zone/${zone.zone_id}`, {
             method: 'DELETE'
@@ -94,7 +94,7 @@ function Dashboard() {
                 alert("No permissions");
                 throw new Error("No permissions");
             } else if (res.ok) { 
-                 setZones(prevZones => prevZones.filter(prevZone => prevZone.zone_id !== zone.zone_id));
+                setZones(prevZones => prevZones.filter(prevZone => prevZone.zone_id !== zone.zone_id));
             } else {
                 throw new Error('Network response was not ok. Status: ' + res.status);
             }
@@ -104,7 +104,7 @@ function Dashboard() {
         });
     };
     
-    function getParametersValues() {
+    const getParametersValues = () => {
         fetch(`/get-gh-parameters-averages/${id}`, {
             method: 'GET'
         })
@@ -115,23 +115,22 @@ function Dashboard() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             setGreenhousePrmsAvgs(data);
         })
         .catch(error => {
             console.log(error);
         });
-    }
+    };
 
     useEffect(() => {
         getParametersValues();
-    }, []);
+    }, [id]);
 
     useInterval(() => {
         getParametersValues();
     }, 10000);
 
-    function getAllParameterData(parameterName, setData) {
+    const getAllParameterData = (parameterName, setData) => {
         const url = `/get-gh-parameter-data?gh_id=${id}&parameter=${parameterName}`;
         fetch(url, {
             method: 'GET'
@@ -143,17 +142,16 @@ function Dashboard() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             setData(data);
         })
         .catch(error => {
             console.log(error);
         });
-    }
+    };
 
     useEffect(() => {
         getAllParameterData("temperature", setTempData);
-    }, []);
+    }, [id]);
 
     useInterval(() => {
         getAllParameterData("temperature", setTempData);
@@ -161,7 +159,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("humidity", setHumData);
-    }, []);
+    }, [id]);
 
     useInterval(() => {
         getAllParameterData("humidity", setHumData);
@@ -169,19 +167,24 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("light", setLightData);
-    }, []);
+    }, [id]);
 
     useInterval(() => {
         getAllParameterData("light", setLightData);
     }, 10000);
-      
+
+    const updateZones = (newZone) => {
+        setZones((prevZones) => [...prevZones, newZone]);
+        fetchGreenhouseData();  // Fetch the updated greenhouse data
+    };
+
     return (
         <>
             <Logo />
 
             <div id="upper-container">
                 <GreenhouseName name={greenhouseBasicData.name}/>
-                <AddZoneButton greenhouseId={id}/>
+                <AddZoneButton greenhouseId={id} updateZones={updateZones} />
             </div>
 
             <div id="parameters-short-container">
