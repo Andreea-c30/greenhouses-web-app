@@ -35,3 +35,18 @@
 .save-data-create-zone:hover {
     background-color: #00D247;
 }
+
+.plant-input{
+   display: block;
+    width: 310px;
+    border: 1px solid #DEDEDE;
+    border-radius: 10px;
+    height: 45px;
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 0px;
+    background-color: #ffffff;
+    
+
+}
