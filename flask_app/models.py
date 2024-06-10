@@ -11,6 +11,8 @@ class Greenhouse(db.Model):
     img = db.Column(db.LargeBinary)
     date = db.Column(db.DateTime, default=func.now())
     imgPath = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
 
     zones = db.relationship(
         'Zone', 

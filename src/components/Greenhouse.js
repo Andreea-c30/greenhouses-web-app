@@ -3,19 +3,44 @@ import NoImage from '../imgs/no-image.jpg'
 import TempIcon from '../imgs/temp-icon.png'
 import HumidityIcon from '../imgs/humidity-icon.png'
 import LightIcon from '../imgs/light-icon.png'
-import WindIcon from '../imgs/wind-icon.png'
+import SoilMoistureIcon from '../imgs/black-soil-moisture-icon.png'
 import DeleteIcon from '../imgs/delete-icon.png'
 import EditIcon from '../imgs/edit-icon.png'
 
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 
 function Greenhouse(props) {
+    const [greenhousePrmsAvgs, setGreenhousePrmsAvgs] = useState({})
     const navigate = useNavigate();
 
     function handleNavigate(id) {
         navigate(`/greenhouse/${id}`);
     }
+
+    function getParametersValues() {
+        fetch(`/get-gh-parameters-averages/${props.greenhouseId}`, {
+            method: 'GET'
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error;
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log(data);
+            setGreenhousePrmsAvgs(data);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+
+    useEffect(() => {
+        getParametersValues();
+    }, [])
 
     return (
         <div className='greenhouse'>
@@ -47,8 +72,14 @@ function Greenhouse(props) {
                         <img src={TempIcon} className='temp-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>{props.greenhouse.temperature}</span>
-                        <span className='temp-symbol'>°C</span>
+                        {greenhousePrmsAvgs.temperature ? (
+                            <>
+                                <span className='temp-number'>{parseInt(greenhousePrmsAvgs.temperature)}</span>
+                                <span className='temp-symbol'>°C</span>
+                            </>
+                        ):(
+                            <span className='temp-number'>off</span>
+                        )}
                     </div>
                 </div>
 
@@ -57,8 +88,14 @@ function Greenhouse(props) {
                         <img src={HumidityIcon} className='humidity-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>{props.greenhouse.humidity}</span>
-                        <span className='temp-symbol'>%</span>
+                        {greenhousePrmsAvgs.humidity ? (
+                            <>
+                                <span className='temp-number'>{parseInt(greenhousePrmsAvgs.humidity)}</span>
+                                <span className='temp-symbol'>%</span>
+                            </>
+                        ):(
+                            <span className='temp-number'>off</span>
+                        )}
                     </div>
                 </div>
 
@@ -67,18 +104,30 @@ function Greenhouse(props) {
                         <img src={LightIcon} className='light-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>{props.greenhouse.light}</span>
-                        <span className='temp-symbol'>%</span>
+                        {greenhousePrmsAvgs.light ? (
+                            <>
+                                <span className='temp-number'>{parseInt(greenhousePrmsAvgs.light)}</span>
+                                <span className='temp-symbol'>%</span>
+                            </>
+                        ):(
+                            <span className='temp-number'>off</span>
+                        )}
                     </div>
                 </div>
 
                 <div className='greenhouse-temp'>
                     <div className='icon-container'>
-                        <img src={WindIcon} className='wind-icon'/>
+                        <img src={SoilMoistureIcon} className='wind-icon'/>
                     </div>
                     <div className='temp-number-symbol-container'>
-                        <span className='temp-number'>{props.greenhouse.ventilation}</span>
-                        <span className='temp-symbol'>%</span>
+                        {greenhousePrmsAvgs.soil_moisture ? (
+                            <>
+                                <span className='temp-number'>{parseInt(greenhousePrmsAvgs.soil_moisture)}</span>
+                                <span className='temp-symbol'>%</span>
+                            </>
+                        ):(
+                            <span className='temp-number'>off</span>
+                        )}
                     </div>
                 </div>
             </div>
