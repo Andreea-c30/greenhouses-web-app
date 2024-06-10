@@ -1,0 +1,96 @@
+/* Zone.css */
+.zone {
+    width: 350px;
+    height: 220px;
+    background-color: #00AF3B;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-right: 60px;
+    margin-bottom: 30px;
+    padding-top: 12px;
+}
+#zones-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping of zones if they exceed the container width */
+    justify-content: flex-start; /* Align zones to the start of the container */
+    margin-left: 150px;
+    margin-right: 100px;
+    margin-top: 22px;
+}
+.zone h3 {
+    margin-top: 0;
+}
+
+.zone p {
+    margin: 5px 0;
+}
+
+
+#zone-name {
+    width: 204px;
+    height: 34px;
+    background-color: #00c342;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    margin-left: 20px;
+    
+}
+
+#zone-name > img {
+    width: 18px;
+    margin-left: 18px;
+}
+
+#zone-name  > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 18px;
+    font-size: 16px;
+    
+}
+
+
+.button {
+    position: relative;
+    display: inline-block;
+   
+    right: 10px;
+    left:285px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0px;
+    background-color: #00c342;
+    justify-content: center;
+    align-items: right;
+    transition: background-color 0.1s;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #E80000;
+}
+
+.delete-icon {
+    width: 15px;
+}
+
+.delete-button.edit-button {
+    top: 8px;
+    right: 50px;
+}
+
+.delete-button.edit-button img {
+    width: 18px;
+}
+.temp-symbol{
+    color: #ffffff;
+}
