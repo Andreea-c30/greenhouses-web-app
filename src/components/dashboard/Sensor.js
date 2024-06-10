@@ -14,22 +14,39 @@ import AddZoneForm from './AddZoneForm';
 import './Sensor.css'; 
 
 function Sensor(props) {
-   
-
+    function onDelete() {
+        // fetch to unset sensors
+        fetch(`/unset-sensor/${props.sensor_id}`, {
+            method: "PUT"
+        })
+        .then(res => {
+            if (!res.ok){
+                throw new Error;
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("FROM ON DELETE ZONE SENSOR: ", data);
+            props.addToFreeSensors({
+                "sensor_id": props.sensor_id, 
+                "parameter": props.sensor_parameter,
+                "sensor_name": props.sensor_name
+            })
+            props.setZoneSensors(props.zoneSensors.filter(sensor => sensor.sensor_id !== props.sensor_id));
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
 
     return (
-        <div >
-                     
+        <div >      
             <p id="sensor-name">
-            <button id='button' onClick={() => {props.onDelete(props.sensor)}}>
+            <button id='button' onClick={() => onDelete(props.sensor)}>
                 <img src={DeleteIcon} className='delete-icon' alt="Delete" />
             </button>
-              TEMOER
-           {props.sensors.name}
+            {props.sensor_parameter} sensor {props.sensor_name}
             </p>
-
-        
-
         </div>
     );
 }

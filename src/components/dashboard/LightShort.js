@@ -10,7 +10,7 @@ function LightShort(props) {
                 {props.value ?
                     (
                         <span className="parameter-value">
-                            {parseInt(props.value)} %
+                            {parseInt(props.value)} lux
                         </span>
                     ):
                     (

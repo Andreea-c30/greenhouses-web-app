@@ -7,12 +7,9 @@ function AddZoneForm(props) {
     const [submitError, setSubmitError] = useState(false);
     const [zones, setZones] = useState([]);
 
-    
-
     const handleNameChange = (event) => {
         setName(event.target.value);
     };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -43,8 +40,6 @@ function AddZoneForm(props) {
      
 
             }
-
-
         } catch (error) {
             console.error('Error:', error);
         }

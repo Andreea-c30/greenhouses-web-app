@@ -27,7 +27,7 @@ function AddSensorsForm(props) {
             });
 
         // Fetch sensors for the specific zone
-        fetch(`/get-zones/${props.zone_id}`)
+        fetch(`/get-zone-sensors/${props.zone_id}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -35,12 +35,13 @@ function AddSensorsForm(props) {
                 return response.json();
             })
             .then(data => {
-                setZoneSensors(data.sensors);
+                console.log("ZONE SENSORS: ", data);
+                setZoneSensors(data);
             })
             .catch(error => {
                 console.error('Error fetching zone sensors data:', error);
             });
-    }, [props.zone_id]);
+    }, []);
 
     const handleAddSensor = async (sensor) => {
         try {
@@ -64,19 +65,20 @@ function AddSensorsForm(props) {
             console.log('Sensor added to zone successfully:', data);
             
             // Update the free sensors list
-            setFreeSensors(freeSensors.filter(s => s.sensor_id !== sensor.sensor_id));
+            setFreeSensors(freeSensors.filter(s => s.sensor_id != sensor.sensor_id));
             
             // Update the zone sensors list
             setZoneSensors([...zoneSensors, sensor]);
-            
-            // Call the parent component's refresh function to update the displayed sensors
-            props.onSensorUpdate();
         } catch (error) {
             console.error('Error adding sensor to zone:', error);
         }
     };
 
-   return (
+    function addToFreeSensors(sensor) {
+        setFreeSensors([...freeSensors, sensor])
+    }
+
+    return (
     <div className="all-gray">
         <div className="form-rectangle-create-zone">
             <button className='close-form-button' onClick={() => { props.setAddSensor(false) }}>
@@ -84,10 +86,15 @@ function AddSensorsForm(props) {
             </button>
             <div className='text-label'>
                 <p>Zone's sensors:</p>
-                {zoneSensors && zoneSensors.map(sensors => (
+                {zoneSensors && zoneSensors.map(s => (
                     <Sensor 
-                        key={sensors.sensor_id}
-                        sensors={sensors.name}
+                        key={s.sensor_id}
+                        sensor_id={s.sensor_id}
+                        sensor_name={s.sensor_name}
+                        sensor_parameter={s.parameter}
+                        setZoneSensors={setZoneSensors}
+                        zoneSensors={zoneSensors}
+                        addToFreeSensors={addToFreeSensors}
                     />
                 ))}
             </div>

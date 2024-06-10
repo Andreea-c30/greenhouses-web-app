@@ -59,9 +59,10 @@ function Dashboard() {
         .catch(error => {
             console.log('Greenhouse not found!', error);
         });
-    }, [id]);
+    }, []);
 
-    useEffect(() => {
+
+    function getZones() {
         fetch(`/get-zones/${id}`, {
             method: 'GET'
         })
@@ -78,22 +79,13 @@ function Dashboard() {
         .catch(error => {
             console.log('Error fetching zones:', error);
         });
-    }, [id]);
-
-    const fetchZones = () => {
-        fetch('/get-zones')
-            .then(response => response.json())
-            .then(data => setZones(data))
-            .catch(error => console.error('Error fetching zones:', error));
-    };
+    }
 
     useEffect(() => {
-        fetchZones();
+        getZones();
     }, []);
-
     
     const deleteZone = (zone) => {
-
         fetch(`/delete-zone/${zone.zone_id}`, {
             method: 'DELETE'
         })
@@ -111,8 +103,6 @@ function Dashboard() {
             console.log(error);
         });
     };
-
-
     
     function getParametersValues() {
         fetch(`/get-gh-parameters-averages/${id}`, {
@@ -135,7 +125,7 @@ function Dashboard() {
 
     useEffect(() => {
         getParametersValues();
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getParametersValues();
@@ -163,7 +153,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("temperature", setTempData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("temperature", setTempData);
@@ -171,7 +161,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("humidity", setHumData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("humidity", setHumData);
@@ -179,7 +169,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("light", setLightData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("light", setLightData);
@@ -188,10 +178,12 @@ function Dashboard() {
     return (
         <>
             <Logo />
+
             <div id="upper-container">
                 <GreenhouseName name={greenhouseBasicData.name}/>
                 <AddZoneButton greenhouseId={id}/>
             </div>
+
             <div id="parameters-short-container">
                 <TemperatureShort value={greenhousePrmsAvgs.temperature}/>
                 <HumidityShort value={greenhousePrmsAvgs.humidity}/>
@@ -203,27 +195,24 @@ function Dashboard() {
             <div id="parameters-graphs">
                 <ParameterGraph data={tempData} parameter="temperature" unit="°C"/>
                 <ParameterGraph data={humData} parameter="humidity" unit="%"/>
-                <ParameterGraph data={lightData} parameter="light intensity" unit="%"/>
+                <ParameterGraph data={lightData} parameter="light intensity" unit="lux"/>
             </div>
 
             {zones.length > 0 && (
-    <div id="zones-container">
-        {zones.map(zone => (
-            <Zone
-                key={zone.zone_id}
-                name={zone.name}
-                plantName={zone.plant_name}
-                sensors={zone.sensors}
-                zone={zone}
-                onDelete={deleteZone}
-                onRefresh={fetchZones}
-            />
-        ))}
-
-       
-    </div>
-)}
-
+                <div id="zones-container">
+                    {zones.map(zone => (
+                        <Zone
+                            key={zone.zone_id}
+                            name={zone.name}
+                            plantName={zone.plant_name}
+                            sensors={zone.sensors}
+                            zone={zone}
+                            gh_id={id}
+                            onDelete={deleteZone}
+                        />
+                    ))}
+                </div>
+            )}
         </>
     );
 }

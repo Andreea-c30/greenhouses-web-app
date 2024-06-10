@@ -125,7 +125,9 @@
 
 .temp-symbol {
     margin-left: 1px;
+    color: black;
 }
+
 
 .temp-number-symbol-container {
     display: flex;

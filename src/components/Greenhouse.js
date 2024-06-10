@@ -107,7 +107,7 @@ function Greenhouse(props) {
                         {greenhousePrmsAvgs.light ? (
                             <>
                                 <span className='temp-number'>{parseInt(greenhousePrmsAvgs.light)}</span>
-                                <span className='temp-symbol'>%</span>
+                                <span className='temp-symbol'>lux</span>
                             </>
                         ):(
                             <span className='temp-number'>off</span>

@@ -20,10 +20,6 @@ function Zone(props) {
     const [EditButton, setEditButton] = useState(false);
     const [plantName, setPlantName] = useState(props.zone.plant_name);
 
-    useEffect(() => {
-        setPlantName(props.zone.plant_name); 
-    }, [props.zone.plant_name]);
-
     const handlePlantUpdate = (newPlantName) => {
         setPlantName(newPlantName);
         refreshZoneData(); 
@@ -32,8 +28,7 @@ function Zone(props) {
     const refreshZoneData = () => {
         props.onRefresh(); 
     };
-
-
+    console.log("PLANT NAME----------", plantName)
     return (
         <div className="zone">
             <button className='button' onClick={() => {setAddZone(true)}}>
@@ -43,7 +38,6 @@ function Zone(props) {
                 <AddZoneForm 
                       setAddZone={setAddZone}
                       zone={props.zone.zone_id}
-                   
                 />
             }
             
@@ -71,13 +65,13 @@ function Zone(props) {
             
             <p id="zone-name" onClick={() => {setAddSensor(true)}}>
                 <img src={SensorsIcon} alt="Sensors" />
-                Sensors: {props.zone.sensors.join(', ')}
+                Sensors
             </p>
             {addSensor && 
                 <AddSensorForm 
                     setAddSensor={setAddSensor}
                     zone_id={props.zone.zone_id}
-                    
+                    gh_id={props.gh_id}
                 />
             }
 
@@ -88,7 +82,7 @@ function Zone(props) {
                     </div>
                     <div className='temp-number-symbol-container'>
                         <span className='temp-number'>{props.zone.temperature}</span>
-                        <span className='temp-symbol'>°C</span>
+                        <span className='ch-symbol'>°C</span>
                     </div>
                 </div>
 
@@ -98,7 +92,7 @@ function Zone(props) {
                     </div>
                     <div className='temp-number-symbol-container'>
                         <span className='temp-number'>{props.zone.humidity}</span>
-                        <span className='temp-symbol'>%</span>
+                        <span className='ch-symbol'>%</span>
                     </div>
                 </div>
 
@@ -108,7 +102,7 @@ function Zone(props) {
                     </div>
                     <div className='temp-number-symbol-container'>
                         <span className='temp-number'>{props.zone.light}</span>
-                        <span className='temp-symbol'>%</span>
+                        <span className='ch-symbol'>%</span>
                     </div>
                 </div>
 
@@ -118,7 +112,7 @@ function Zone(props) {
                     </div>
                     <div className='temp-number-symbol-container'>
                         <span className='temp-number'>{props.zone.soil_moisture}</span>
-                        <span className='temp-symbol'>%</span>
+                        <span className='ch-symbol'>%</span>
                     </div>
                 </div>
             </div>
