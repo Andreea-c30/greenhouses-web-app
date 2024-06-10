@@ -24,9 +24,8 @@ function Sensor(props) {
             <button id='button' onClick={() => {props.onDelete(props.sensor)}}>
                 <img src={DeleteIcon} className='delete-icon' alt="Delete" />
             </button>
-              
-                temperatura
-                {props.sensor.name}
+              TEMOER
+           {props.sensors.name}
             </p>
 
         
