@@ -66,7 +66,7 @@ function AddPlantForm(props) {
             }
 
             props.setAddPlant(false); 
-            props.onPlantUpdate();
+            props.onPlantUpdate(); // Notify parent component
         } catch (error) {
             console.error('Error adding plant to zone:', error);
         }
