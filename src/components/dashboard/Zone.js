@@ -38,9 +38,6 @@ function Zone(props) {
                 <AddZoneForm 
                       setAddZone={setAddZone}
                       zone={props.zone.zone_id}
-
-                      name={props.zone.name}
-
                 />
             }
             
