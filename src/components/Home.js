@@ -6,6 +6,7 @@ import AddGreenhouseForm from './AddGreenhouseForm';
 import SortGreenhouses from './SortGreenhouses';
 import ThemeMode from './ThemeMode';
 import Pagination from './Pagination';
+import AllGreenhousesMap from './AllGreenhousesMap';
 import './Home.css'
 
 
@@ -18,6 +19,7 @@ function Home() {
   const [primaryColor, setPrimaryColor] = useState('#00AF3B');
   const [primaryLightColor, setPrimaryLightColor] = useState('#00D247');
   const [totalItems, setTotalItems] = useState();
+  const [latLng, setLatLng] = useState([]);
 
   // Gets the greenhouse items from a specific page
   function getGreenhouses(page) {
@@ -35,6 +37,16 @@ function Home() {
     })
     .then(data => {
       setCurrentGreenhouses(data["greenhouses"]);
+
+      const latLngList = data["greenhouses"]
+      .filter(greenhouse => greenhouse.lat !== undefined && greenhouse.lng !== undefined)
+      .map(greenhouse => ({
+        name: greenhouse.name,
+        lat: greenhouse.lat,
+        lng: greenhouse.lng
+      }));
+      setLatLng(latLngList);
+
       setTotalItems(data["total_items"]);
     })
     .catch(error => {
@@ -176,7 +188,10 @@ function Home() {
           } 
         </div>
         <Pagination getGreenhouses={getGreenhouses} totalItems={totalItems}/>
-        {/* {`/greenhouse/${greenhouseId}`} */}
+        
+        <div className='all-greenhouses-on-map'>
+        <AllGreenhousesMap latLng={latLng} />
+        </div>
       </div>
   );
 }

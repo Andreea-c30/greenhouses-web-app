@@ -34,3 +34,10 @@
   font-size: large;
   color: var(--primary-color)
 }
+
+.all-greenhouses-on-map {
+  margin-left: 10%;
+  margin-right: 10%;
+  height: 400px;
+  min-height: 300px;
+}

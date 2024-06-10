@@ -31,7 +31,9 @@ def create_greenhouse():
             location=request.form.get("location", default="", type=str),
             img=img.read() if img else None,
             imgPath=img.filename if img else None,
-            date=datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ') if date else None
+            date=datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ') if date else None,
+            lat=request.form.get("lat") if 'null' != request.form.get("lat") else None,
+            lng=request.form.get("lng") if 'null' != request.form.get("lng") else None,
         )
         db.session.add(greenhouse)
         db.session.flush()
@@ -70,10 +72,10 @@ def get_greenhouses():
             gh_dict["name"] = greenhouse.name
             gh_dict["location"] = greenhouse.location
             gh_dict["date"] = greenhouse.date.isoformat() if greenhouse.date else None
-
-            # Get the parameters
-            for parameter in ["temperature", "humidity", "light", "ventilation"]:
-                gh_dict[parameter] = random.randint(1, 100)
+            if greenhouse.lat:
+                gh_dict["lat"] = greenhouse.lat
+            if greenhouse.lng:
+                gh_dict["lng"] = greenhouse.lng
 
             # Save the gh to the list
             greenhouses_list.append(gh_dict)     
@@ -103,6 +105,10 @@ def update_greenhouse(greenhouse_id):
         if img: 
             greenhouse.img = img.read()
             greenhouse.imgPath = img.filename
+        lat = request.form.get("lat")
+        if lat and lat != "null": greenhouse.lat = lat
+        lng = request.form.get("lng")
+        if lng and lng != "null": greenhouse.lng = lng
 
         # Save the changes.
         db.session.commit()

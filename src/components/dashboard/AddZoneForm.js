@@ -6,6 +6,8 @@ import './AddZoneForm.css';
 function AddZoneForm(props) {
     const [name, setName] = useState("");
     const [submitError, setSubmitError] = useState(false);
+    const [zones, setZones] = useState([]);
+
 
     const handleNameChange = (event) => {
         setName(event.target.value);
@@ -41,6 +43,10 @@ function AddZoneForm(props) {
 
             // Update the zones list in the parent component
             props.updateZones(zoneData);
+
+     
+
+            }
 
         } catch (error) {
             console.error('Error:', error);

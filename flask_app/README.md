@@ -1,4 +1,5 @@
 To run the Flask app and access the Swagger:
+
 0. git checkout pbl
 1. cd flask_app
 2. pip install -r requirements.txt

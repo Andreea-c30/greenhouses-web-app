@@ -11,6 +11,8 @@ class Greenhouse(db.Model):
     img = db.Column(db.LargeBinary)
     date = db.Column(db.DateTime, default=func.now())
     imgPath = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
 
     zones = db.relationship(
         'Zone', 
@@ -71,7 +73,7 @@ class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gh_id = db.Column(db.Integer, db.ForeignKey('greenhouses.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zones.id'))
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
     mqtt_topic = db.Column(db.String)
     
@@ -86,7 +88,7 @@ class SensorData(db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zones.id'))
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.id'))
     data = db.Column(db.Float)
-    date = db.Column(db.DateTime, default=func.now())
+    date = db.Column(db.DateTime, default=func.now(), unique=True)
     parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
 
 

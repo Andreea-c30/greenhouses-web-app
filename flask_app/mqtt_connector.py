@@ -2,6 +2,7 @@ from paho.mqtt import client as mqtt_client
 import mqtt_access
 import random
 import json
+import time
 
 from db import db
 from models import (
@@ -46,7 +47,7 @@ def subscribe(client):
         from app import app
         with app.app_context():
             if 'sensor_id' in data: 
-                sensor = Sensor.query.filter_by(name=data["sensor_id"]).first()
+                sensor = Sensor.query.filter_by(name=str(data["sensor_id"])).first()
                 if sensor:
                     print(sensor)
                     if sensor.zone_id:
@@ -84,9 +85,13 @@ def subscribe(client):
                                 parameter_id=parameter.id,
                                 mqtt_topic=msg.topic + "/set"
                             )
-                            db.session.add(sensor)
-                            db.session.commit()
+                            try:
+                                db.session.add(sensor)
+                                db.session.commit()
+                            except:
+                                print("Error sensor")
                             break
+
 
             # When in the front the sensor is going to be set to a zone
             # we are going to add its "zone_id" in the "sensors" table

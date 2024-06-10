@@ -56,6 +56,7 @@ function Dashboard() {
         .catch(error => {
             console.log('Greenhouse not found!', error);
         });
+
     };
 
     useEffect(() => {
@@ -63,6 +64,12 @@ function Dashboard() {
     }, [id]);
 
     const getZones = () => {
+
+    }, []);
+
+
+    function getZones() {
+
         fetch(`/get-zones/${id}`, {
             method: 'GET'
         })
@@ -78,11 +85,19 @@ function Dashboard() {
         .catch(error => {
             console.log('Error fetching zones:', error);
         });
+
     };
 
     useEffect(() => {
         getZones();
     }, [id]);
+
+    }
+
+    useEffect(() => {
+        getZones();
+    }, []);
+    
 
     const deleteZone = (zone) => {
         fetch(`/delete-zone/${zone.zone_id}`, {
@@ -123,7 +138,7 @@ function Dashboard() {
 
     useEffect(() => {
         getParametersValues();
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getParametersValues();
@@ -150,7 +165,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("temperature", setTempData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("temperature", setTempData);
@@ -158,7 +173,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("humidity", setHumData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("humidity", setHumData);
@@ -166,7 +181,7 @@ function Dashboard() {
 
     useEffect(() => {
         getAllParameterData("light", setLightData);
-    }, [id]);
+    }, []);
 
     useInterval(() => {
         getAllParameterData("light", setLightData);

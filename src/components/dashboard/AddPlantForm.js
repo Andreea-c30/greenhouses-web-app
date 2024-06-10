@@ -60,13 +60,14 @@ function AddPlantForm(props) {
             console.log('Plant added to zone successfully: ', plantData);
             
             // Find the plant name
-            const selectedPlant = plants.find(plant => plant.plant_id === selectedPlantId);
+            console.log("THE ID OF THE PLANTED PLANT: ", selectedPlantId)
+            console.log("PLANTS: ", plants);
+            const selectedPlant = plants.find(plant => plant.plant_id == selectedPlantId);
             if (selectedPlant) {
                 props.onPlantUpdate(selectedPlant.plant_name); 
             }
 
             props.setAddPlant(false); 
-            props.onPlantUpdate(); // Notify parent component
         } catch (error) {
             console.error('Error adding plant to zone:', error);
         }
